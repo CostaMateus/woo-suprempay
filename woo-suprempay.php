@@ -6,7 +6,7 @@
  * Author:               Mateus Costa
  * Author URI:           https://costamateus.com.br/
  * Version:              1.0.0
- * Text Domain:          suprempay-gateway
+ * Text Domain:          suprempay_gateway
  * RequiresPHP:          7.4
  * RequiresWP:           6.0
  * WC requires at least: 6.3
