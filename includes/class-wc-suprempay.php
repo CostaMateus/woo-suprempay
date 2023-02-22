@@ -41,10 +41,9 @@ class WC_SupremPay
 			if ( class_exists( "Extra_Checkout_Fields_For_Brazil" ) )
 			{
 				// include_once dirname( __FILE__ ) . "/class-wc-suprempay-api.php";
-				// include_once dirname( __FILE__ ) . "/class-wc-suprempay-gateway.php";
-
+				include_once dirname( __FILE__ ) . "/class-wc-suprempay-gateway.php";
 				include_once dirname( __FILE__ ) . "/rest-api/class-wp-suprempay-rest-api.php";
-				
+
 				new WP_SupremPay_Rest_Api();
 
 				add_filter( "woocommerce_payment_gateways",           [ $this, "add_gateway"                  ]       );
@@ -66,6 +65,16 @@ class WC_SupremPay
 	}
 
 	/**
+	 * Get templates path.
+	 *
+	 * @return string
+	 */
+	public static function get_templates_path()
+    {
+		return plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . "templates/";
+	}
+
+	/**
 	 * Action links.
 	 *
 	 * @since 	1.0.0
@@ -75,7 +84,7 @@ class WC_SupremPay
 	public function plugin_action_links( $links )
     {
         $url            = esc_url( admin_url( "admin.php?page=wc-settings&tab=checkout&section=suprempay" ) );
-        $text           = __( "Configurações", "suprempay-gateway" );
+        $text           = __( "Configurações", WC_SUPREMPAY_DOMAIN );
 		$plugin_links   = [];
 		$plugin_links[] = "<a href='{$url}' >{$text}</a>";
 
