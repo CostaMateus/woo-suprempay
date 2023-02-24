@@ -14,6 +14,6 @@ defined( "ABSPATH" ) || exit;
 		<strong>
 			<?php _e( "WooCommerce SupremPay - Desativado", WC_SUPREMPAY_DOMAIN ); ?>
 		</strong>:
-		<?php _e( "Você deve informar os tokens (sandbox/produção) de autenticação.", WC_SUPREMPAY_DOMAIN ); ?>
+		<?php _e( "Você deve informar as chaves de usuário e de integração (sandbox/produção), para começar a usar o plugin.", WC_SUPREMPAY_DOMAIN ); ?>
 	</p>
 </div>
