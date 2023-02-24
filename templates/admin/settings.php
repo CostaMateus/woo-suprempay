@@ -16,10 +16,10 @@ defined( "ABSPATH" ) || exit;
 	if ( "yes" == $this->get_option( "enabled" ) )
 	{
 		if ( !$this->using_supported_currency() && !class_exists( "woocommerce_wpml" ) )
-			include dirname( __FILE__ ) . "/html-notice-currency-not-supported.php";
+			include dirname( WC_SUPREMPAY_PLUGIN_FILE ) . "/templates/notices/currency-not-supported.php";
 
-		if ( "" === $this->get_access_key() )
-			include dirname( __FILE__ ) . "/html-notice-access_key-missing.php";
+		if ( "" === $this->get_token_user() || "" === $this->get_token_integration() )
+			include dirname( WC_SUPREMPAY_PLUGIN_FILE ) . "/templates/notices/token-missing.php";
 	}
 ?>
 
