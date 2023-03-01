@@ -70,7 +70,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		$this->pix               = $this->get_option( "pix"                        );
 		$this->pix_due_date      = $this->get_option( "pix_due_date", "15"         );
-		$this->pix_message       = "Utilize o seu aplicativo favorito do Pix para ler o QR Code ou copiar o código abaixo e efetuar o pagamento.";
+		$this->pix_message       = $this->get_option( "pix_message", "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento." );
 
         // $this->cc                = $this->get_option( "cc"                         );
         // $this->cc_type           = $this->get_option( "cc_type",         "avista"  );
@@ -179,90 +179,105 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			// Enable/Disable SupremPay Gateway
 			"enabled"          => [
 				"type"        => "checkbox",
-				"title"       => __( "Ativar / Desativar",                                                  $this->domain ),
-				"label"       => __( "Ativar SupremPay",                                                     $this->domain ),
+				"title"       => __( "Ativar / Desativar",                      $this->domain ),
+				"label"       => __( "Ativar SupremPay",                        $this->domain ),
 				"default"     => "no",
 			],
 
 			"title"            => [
 				"type"        => "text",
-				"title"       => __( "Título",                                                              $this->domain ),
-				"description" => __( "Controla o título que o usuário vê durante o checkout.",              $this->domain ),
-				"default"     => __( "SupremPay",                                                            $this->domain ),
+				"title"       => __( "Título",                                  $this->domain ),
+				"description" => __( "Controla o título que o usuário vê
+									  durante o checkout.",                     $this->domain ),
+				"default"     => __( "SupremPay",                               $this->domain ),
 				// "desc_tip"    => true,
 			],
 			"description"      => [
 				"type"        => "textarea",
-				"title"       => __( "Descrição",                                                           $this->domain ),
-				"description" => __( "Controla a descrição que o usuário vê durante o checkout.",           $this->domain ),
-				"default"     => __( "Pague com a SupremPay",                                                $this->domain ),
+				"title"       => __( "Descrição",                               $this->domain ),
+				"description" => __( "Controla a descrição que o usuário vê
+									  durante o checkout.",                     $this->domain ),
+				"default"     => __( "Pague com a SupremPay",                   $this->domain ),
 				// "desc_tip"    => true,
 			],
 
 			// integração
 			"integration"      => [
-				"title"       => __( "Integração",                                                          $this->domain ),
+				"title"       => __( "Integração",                              $this->domain ),
 				"type"        => "title",
 				"description" => "",
 			],
 			"is_homol"         => [
 				"type"        => "checkbox",
-				"title"       => __( "API sandbox",                                                         $this->domain ),
-				"label"       => __( "Ativar API sandbox (homologação)",                                    $this->domain ),
+				"title"       => __( "API sandbox",                             $this->domain ),
+				"label"       => __( "Ativar API sandbox (homologação)",        $this->domain ),
 				"default"     => "yes",
 			],
 			"token_user_hml"   => [
 				"type"        => "password",
-				"title"       => __( "Chave de usuário (sandbox)",                                                         $this->domain ),
-				"description" => __( "Entre com sua chave de autenticação obtida no painel do SupremCash (sandbox).",      $this->domain ),
+				"title"       => __( "Chave de usuário (sandbox)",              $this->domain ),
+				"description" => __( "Entre com sua chave de autenticação obtida
+									  no painel do SupremCash (sandbox).",      $this->domain ),
 				"desc_tip"    => true,
 				"default"     => "",
 			],
             "token_user"       => [
 				"type"        => "password",
-				"title"       => __( "Chave de usuário (produção)",                                                        $this->domain ),
-				"description" => __( "Entre com sua chave de autenticação obtida no painel do SupremCash (produção).",     $this->domain ),
+				"title"       => __( "Chave de usuário (produção)",             $this->domain ),
+				"description" => __( "Entre com sua chave de autenticação obtida
+									  no painel do SupremCash (produção).",     $this->domain ),
 				"desc_tip"    => true,
 				"default"     => "",
 			],
 			"token_integr_hml" => [
 				"type"        => "password",
-				"title"       => __( "Chave de integração (sandbox)",                                                      $this->domain ),
-				"description" => __( "Entre com sua chave de autenticação obtida com o suporte do SupremCash (sandbox).",  $this->domain ),
+				"title"       => __( "Chave de integração (sandbox)",           $this->domain ),
+				"description" => __( "Entre com sua chave de autenticação obtida
+									  com o suporte do SupremCash (sandbox).",  $this->domain ),
 				"desc_tip"    => true,
 				"default"     => "",
 			],
             "token_integr"     => [
 				"type"        => "password",
-				"title"       => __( "Chave de integração (produção)",                                                     $this->domain ),
-				"description" => __( "Entre com sua chave de autenticação obtida com o suporte do SupremCash (produção).", $this->domain ),
+				"title"       => __( "Chave de integração (produção)",          $this->domain ),
+				"description" => __( "Entre com sua chave de autenticação obtida
+									  com o suporte do SupremCash (produção).", $this->domain ),
 				"desc_tip"    => true,
 				"default"     => "",
 			],
 
 			// pix
 			"pix_title"        => [
-				"title"       => __( "PIX",                                                                 $this->domain ),
+				"title"       => __( "PIX",                                     $this->domain ),
 				"type"        => "title",
 				"description" => "",
 			],
             "pix"              => [
                 "type"    => "checkbox",
-                "title"   => __( "Pagamento por PIX",                                                       $this->domain ),
-                "label"   => __( "Ativar pix no checkout",                                                  $this->domain ),
+                "title"   => __( "Pagamento por PIX",                           $this->domain ),
+                "label"   => __( "Ativar pix no checkout",                      $this->domain ),
                 "default" => "yes",
             ],
 			"pix_due_date"     => [
 				"type"        => "number",
-				"title"       => __( "Validade do QRCode do pix",                                           $this->domain ),
-				"description" => __( "Informe qual o prazo de validade do QRCode do PIX, em minutos.<br>
-									  Mínimo 5.",                                                           $this->domain ),
+				"title"       => __( "Validade do QRCode do pix",               $this->domain ),
+				"description" => __( "Informe qual o prazo de validade do
+									  QRCode do PIX, em minutos.<br>Mínimo 5.", $this->domain ),
 				"default"     => 2,
 				"custom_attributes" => [
 					"maxlength" => 3,
 					"min"       => 5,
 				],
             ],
+			"pix_message"      => [
+				"type"        => "text",
+				"title"       => __( "Mensagem PIX",                            $this->domain ),
+				"description" => __( "Controla a mensagem de instrução para
+									  uso do QRCode que o usuário vê na
+									  finalização do pedido.",                  $this->domain ),
+				"default"     => "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento.",
+				// "desc_tip"    => true,
+			],
 
 			// // card
 			// "cc_title"        => [ "type" => "title" ],
@@ -324,23 +339,24 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
             // ],
 
 			"behavior"        => [
-				"title"       => __( "Comportamento da integração",                                         $this->domain ),
+				"title"       => __( "Comportamento da integração",             $this->domain ),
 				"type"        => "title",
 				"description" => "",
             ],
 			"invoice_prefix"  => [
 				"type"        => "text",
-				"title"       => __( "Prefixo do pedido",                                                                                                                                                                    $this->domain ),
-				"description" => __( "Por favor informe um prefixo para utilizar com os números de pedidos.", $this->domain ), // Caso você utilize sua conta do SupremPay em mais de uma loja, procure utilizar um prefixo único para cada loja
+				"title"       => __( "Prefixo do pedido",                        $this->domain ),
+				"description" => __( "Por favor informe um prefixo para utilizar
+									  com os números de pedidos.",               $this->domain ), // Caso você utilize sua conta do SupremPay em mais de uma loja, procure utilizar um prefixo único para cada loja
 				"desc_tip"    => true,
 				"default"     => "WC-",
             ],
 
             "debug"           => [
 				"type"        => "checkbox",
-				"title"       => __( "Debug Log",                                                           $this->domain ),
-				"label"       => __( "Ativar Logger",                                                       $this->domain ),
-				"description" => sprintf( __( "Registrar log de eventos, %s",                               $this->domain ), $this->get_log_view() ),
+				"title"       => __( "Debug Log",                                $this->domain ),
+				"label"       => __( "Ativar Logger",                            $this->domain ),
+				"description" => sprintf( __( "Registrar log de eventos, %s", $this->domain ), $this->get_log_view() ),
 				"default"     => "yes",
 			],
 		];
