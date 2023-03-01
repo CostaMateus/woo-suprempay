@@ -80,6 +80,7 @@ class WC_SupremPay_API
 	public function __construct( $gateway = null )
     {
 		$this->gateway = $gateway;
+		$this->register_weehook();
 	}
 
 	/**
@@ -496,23 +497,44 @@ class WC_SupremPay_API
 		return $response;
 	}
 
-	/**
-	 * Generate a card token
-	 *
-	 * @param array $data
-	 * @return array
-	 */
-	private function create_card_token( $data )
+	private function register_weehook()
 	{
-		$header = [];
-		$params = [
-			"name"       => $data[ "holder"      ],
-			"number"     => $data[ "card_number" ],
-			"brand"      => $data[ "brand"       ],
-			"expiration" => $data[ "expiration"  ],
+		if ( defined( "SUPREMPAY_WH_BIL" ) && defined( "SUPREMPAY_WH_PIX" ) && defined( "SUPREMPAY_WH_TED" ) ) return;
+
+        $v         = WC_SUPREMPAY_REST_API_VER;
+		$endpoints = [
+			"BIL" => [
+				"token_api" => $this->gateway->get_token_user(),
+				"service"   => "collection-billet",
+				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/billet" ),
+			],
+			"PIX" => [
+				"token_api" => $this->gateway->get_token_user(),
+				"service"   => "collection-pix",
+				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/pix"    ),
+			],
+			"TED" => [
+				"token_api" => $this->gateway->get_token_user(),
+				"service"   => "collection-ted",
+				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/ted"    ),
+			],
 		];
 
-		return $this->exec( "card/token", "POST", $header, $params );
+		foreach ( $endpoints as $key => $endpoint )
+		{
+			$this->log( json_encode( $endpoint ) );
+
+			$response = $this->exec( "webhook/set", "POST", [], $endpoint );
+
+			if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "success" ] )
+				define( "SUPREMPAY_WH_{$key}", true );
+
+			/**
+			 * TODO remover na finalização do plugin
+			 */
+			if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "message" ] == "Please enter a valid url!" )
+				define( "SUPREMPAY_WH_{$key}", true );
+		}
 	}
 
 	/**
