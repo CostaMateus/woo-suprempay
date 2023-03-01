@@ -19,11 +19,12 @@
 defined( "ABSPATH" ) || exit;
 
 // Plugin constants.
-define( "WC_SUPREMPAY_DOMAIN",      "suprempay_gateway" );
-define( "WC_SUPREMPAY_VERSION",     "1.0.0"             );
-define( "WC_SUPREMPAY_PLUGIN_FILE", __FILE__            );
+define( "WC_SUPREMPAY_DOMAIN",       "suprempay_gateway" );
+define( "WC_SUPREMPAY_VERSION",      "1.0.0"             );
+define( "WC_SUPREMPAY_REST_API_VER", "v1"                );
+define( "WC_SUPREMPAY_PLUGIN_FILE",  __FILE__            );
 
-if ( ! class_exists( "WC_SupremPay" ) )
+if ( !class_exists( "WC_SupremPay" ) )
 {
 	include_once dirname( __FILE__ ) . "/includes/class-wc-suprempay.php";
 	add_action( "plugins_loaded", [ "WC_SupremPay", "init" ] );
