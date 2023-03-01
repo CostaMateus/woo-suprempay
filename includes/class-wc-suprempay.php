@@ -40,7 +40,7 @@ class WC_SupremPay
 		{
 			if ( class_exists( "Extra_Checkout_Fields_For_Brazil" ) )
 			{
-				// include_once dirname( __FILE__ ) . "/class-wc-suprempay-api.php";
+				include_once dirname( __FILE__ ) . "/class-wc-suprempay-api.php";
 				include_once dirname( __FILE__ ) . "/class-wc-suprempay-gateway.php";
 				include_once dirname( __FILE__ ) . "/rest-api/class-wp-suprempay-rest-api.php";
 
