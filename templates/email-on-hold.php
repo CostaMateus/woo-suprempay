@@ -8,22 +8,6 @@
  */
 defined( "ABSPATH" ) || exit;
 
-$upload     = wp_upload_dir();
-$uploadPath = $upload[ "basedir" ] . "/woo-suprempay/";
-$uploadUrl  = $upload[ "baseurl" ] . "/woo-suprempay/";
-$uploaded   = false;
-
-if ( !file_exists( $uploadPath ) ) wp_mkdir_p( $uploadPath );
-
-if ( isset( $image ) && !empty( $image ) )
-{
-	$data        = substr( $image, strpos( $image, "," ) + 1 );
-	$data        = str_replace( " ", "+", $data );
-	$decodedData = base64_decode( $data );
-	$imageName   = uniqid() . ".png";
-	$file        = $uploadPath . $imageName;
-	$uploaded    = file_put_contents( $file, $decodedData );
-}
 ?>
 
 <p>
@@ -34,12 +18,10 @@ if ( isset( $image ) && !empty( $image ) )
 </p>
 
 <div style="margin: 36px auto;">
-	<?php if ( $uploaded ) : ?>
-		<h3 style="font-size: 18px;">Pague com o código abaixo</h3>
-		<img style="display:table; background-color:#FFF" src="<?php echo esc_url( $uploadUrl . $imageName ); ?>" alt="Code" />
-		<br>
-	<?php endif; ?>
+	<h3 style="font-size: 18px;">Pague com o código abaixo</h3>
+	<img style="display:table; background-color:#FFF; max-width:350px!important;" src="<?php echo $link; ?>" alt="Code" />
+	<br>
 
 	<h3 style="font-size: 18px;">Pague copiando e colando o código abaixo</h3>
-	<p class="rppix-p" style="font-size: 14px;margin-bottom:0"><?php echo $link; ?></p>
+	<p class="rppix-p" style="font-size:14px; margin-bottom:0"><?php echo $code; ?></p>
 </div>
