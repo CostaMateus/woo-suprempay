@@ -19,6 +19,7 @@
 defined( "ABSPATH" ) || exit;
 
 // Plugin constants.
+define( "WC_SUPREMPAY_ID",           "suprempay"         );
 define( "WC_SUPREMPAY_DOMAIN",       "suprempay_gateway" );
 define( "WC_SUPREMPAY_VERSION",      "1.0.0"             );
 define( "WC_SUPREMPAY_REST_API_VER", "v1"                );
