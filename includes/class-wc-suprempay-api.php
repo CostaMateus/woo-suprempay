@@ -10,8 +10,28 @@ defined( "ABSPATH" ) || exit;
 
 class WC_SupremPay_API
 {
+	/**
+	 * Endpoint homol.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
 	const API_HML    = "https://demoapi.suprem.cash";
+
+	/**
+	 * Endpoint prod.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
 	const API_PRD    = "https://api.suprem.cash";
+
+	/**
+	 * Http codes.
+	 *
+	 * @var 	array
+	 * @since 	1.0.0
+	 */
 	const HTTP_CODES = [
 		// [Informational 1xx]
 		100 => "Continue",
@@ -68,14 +88,16 @@ class WC_SupremPay_API
 	/**
 	 * Gateway class.
 	 *
-	 * @var WC_SupremPay_Gateway
+	 * @var 	WC_SupremPay_Gateway
+	 * @since 	1.0.0
 	 */
 	protected $gateway;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param WC_SupremPay_Gateway $gateway Payment Gateway instance.
+	 * @since 	1.0.0
+	 * @param 	WC_SupremPay_Gateway $gateway Gateway instance.
 	 */
 	public function __construct( $gateway = null )
     {
@@ -86,7 +108,8 @@ class WC_SupremPay_API
 	/**
 	 * Return api url.
 	 *
-	 * @return string
+	 * @since 	1.0.0
+	 * @return 	string
 	 */
 	private function get_api_url()
 	{
@@ -98,11 +121,12 @@ class WC_SupremPay_API
 	/**
 	 * Exec the calls
 	 *
-	 * @param string $api 			Api route to be call
-	 * @param string $method 		Method of api route
-	 * @param array  $add_header 	Additional header to be sent in the header
-	 * @param array  $params		Data to be sent in the body
-	 * @return array
+	 * @since 	1.0.0
+	 * @param 	string 	$api 			Api route to be call
+	 * @param 	string 	$method 		Method of api route
+	 * @param 	array 	$add_header 	Additional header to be sent in the header
+	 * @param 	array 	$params 		Data to be sent in the body
+	 * @return 	array
 	 */
 	private function exec( $api, $method, $add_header = [], $params = null )
     {
@@ -219,9 +243,10 @@ class WC_SupremPay_API
 	/**
 	 * Process the payment
 	 *
-	 * @param string $method 	Payment method (CC, Pix, Ticket)
-	 * @param array  $data 		Data of the payment
-	 * @return array
+	 * @since 	1.0.0
+	 * @param 	string 	$method 	Payment method (CC, Pix, Ticket)
+	 * @param 	array 	$data 		Data of the payment
+	 * @return 	array
 	 */
 	public function do_payment( $method, $data )
 	{
@@ -236,8 +261,9 @@ class WC_SupremPay_API
 	/**
 	 * Process credit card payment
 	 *
-	 * @param array $data 	Data of the payment
-	 * @return array
+	 * @since 	1.0.0
+	 * @param 	array 	$data 	Data of the payment
+	 * @return 	array
 	 */
 	private function do_payment_cc( $data )
 	{
@@ -370,8 +396,9 @@ class WC_SupremPay_API
 	/**
 	 * Process pix payment
 	 *
-	 * @param array $data 	Data of the payment
-	 * @return array
+	 * @since 	1.0.0
+	 * @param 	array 	$data 	Data of the payment
+	 * @return 	array
 	 */
 	private function do_payment_pix( $data )
 	{
@@ -379,7 +406,7 @@ class WC_SupremPay_API
 
 		$prefix   = $this->gateway->get_invoice_prefix();
 		$order    = $data[ "order" ];
-		$descrip  = "#{$prefix}{$order->get_id()} - {$data["name"]}";
+		$descrip  = "#{$prefix}{$order->get_id()} | {$data["name"]}";
 
 		$amount   = ( float ) $data[ "amount" ];
 		$email    = $data[ "email" ];
@@ -434,8 +461,9 @@ class WC_SupremPay_API
 	/**
 	 * Process ticket payment
 	 *
-	 * @param array $data 	Data of the payment
-	 * @return array
+	 * @since 	1.0.0
+	 * @param 	array 	$data 	Data of the payment
+	 * @return 	array
 	 */
 	private function do_payment_ticket( $data )
 	{
@@ -497,6 +525,12 @@ class WC_SupremPay_API
 		return $response;
 	}
 
+	/**
+	 * Register webhooks
+	 *
+	 * @since 	1.0.0
+	 * @return 	void
+	 */
 	private function register_weehook()
 	{
 		if ( defined( "SUPREMPAY_WH_BIL" ) && defined( "SUPREMPAY_WH_PIX" ) && defined( "SUPREMPAY_WH_TED" ) ) return;
@@ -540,8 +574,10 @@ class WC_SupremPay_API
 	/**
 	 * Log
 	 *
-	 * @param string $message
-	 * @param boolean $is_error
+	 * @since 	1.0.0
+	 * @param 	string 		$message
+	 * @param 	boolean 	$is_error
+	 * @return 	void
 	 */
 	private function log( $message, $is_error = false )
 	{
