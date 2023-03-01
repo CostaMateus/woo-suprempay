@@ -39,6 +39,20 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 	protected $request   = [];
 
 	/**
+	 * Status of pix webhook.
+	 *
+	 * @var 	array
+	 * @since 	1.0.0
+	 */
+	protected $status    = [
+		0 => "recebido",
+		1 => "pendente",
+		2 => "parcial",
+		3 => "cancelado",
+		4 => "estornado"
+	];
+
+	/**
 	 * Logger
 	 *
 	 * @var 	WC_Logger
@@ -134,17 +148,41 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 	 */
 	public function pix( WP_REST_Request $request )
 	{
-		/**
-		 * TODO tratar os dados
-		 */
-		$param    = $request->get_params();
+		$params    = $request->get_params();
 
-		$data     = [
+		$gateways  = new WC_Payment_Gateways();
+		$gateways  = $gateways->get_available_payment_gateways();
+
+		$suprempay = null;
+		$order_id  = null;
+
+		foreach( $gateways as $id => $gateway )
+			if ( $id == WC_SUPREMPAY_ID )
+				$suprempay = $gateway;
+
+		if ( isset( $params[ "description" ] ) && $suprempay )
+		{
+			$prefix   = $suprempay->get_invoice_prefix();
+			$order_id = reset( explode( " | ", $params[ "description" ] ) );
+			$order_id = end( explode( "#{$prefix}", $order_id ) );
+		}
+
+		if ( isset( $params[ "status" ] ) && $order_id )
+		{
+			$status   = $params[ "status" ];
+			$order    = wc_get_order( $order_id );
+
+			$order->add_order_note( "SupremPay: Pagamento {$this->status[ $status ]}" );
+
+			if ( $status == "0" ) $order->update_status( "processing" );
+
+			if ( in_array( $status, [ "3", "4" ] ) ) $order->update_status( "cancelled" );
+		}
+
+		$response = new WP_REST_Response( [
 			"success" => true,
 			"message" => "ok",
-		];
-
-		$response = new WP_REST_Response( $data, 200 );
+		], 200 );
 
 		return $response;
 	}
