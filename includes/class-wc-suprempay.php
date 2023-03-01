@@ -22,18 +22,10 @@ class WC_SupremPay
 	protected static $instance = null;
 
 	/**
-	 * Return an instance of this class.
+	 * Construct
 	 *
 	 * @since 	1.0.0
-	 * @return 	object 	A single instance of this class.
 	 */
-	public static function init()
-    {
-		// If the single instance hasn't been set, set it now.
-		if ( null === self::$instance ) self::$instance = new self;
-		return self::$instance;
-	}
-
 	private function __construct()
     {
 		if ( class_exists( "WooCommerce" ) )
@@ -65,9 +57,23 @@ class WC_SupremPay
 	}
 
 	/**
+	 * Return an instance of this class.
+	 *
+	 * @since 	1.0.0
+	 * @return 	object 	A single instance of this class.
+	 */
+	public static function init()
+    {
+		// If the single instance hasn't been set, set it now.
+		if ( null === self::$instance ) self::$instance = new self;
+		return self::$instance;
+	}
+
+	/**
 	 * Get templates path.
 	 *
-	 * @return string
+	 * @since 	1.0.0
+	 * @return 	string
 	 */
 	public static function get_templates_path()
     {
