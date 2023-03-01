@@ -15,11 +15,15 @@ class WP_SupremPay_Rest_Api
 {
 	/**
 	 * Initialize the plugin public actions.
+     *
+     * @since   1.0.0
 	 */
     public function __construct()
 	{
-		include_once dirname( __FILE__ ) . "/controllers/v1/class-wp-suprempay-rest-cards-controller.php";
-		include_once dirname( __FILE__ ) . "/controllers/v1/class-wp-suprempay-rest-webhook-controller.php";
+        $v = WC_SUPREMPAY_REST_API_VER;
+
+		include_once dirname( __FILE__ ) . "/controllers/{$v}/class-wp-suprempay-rest-cards-controller.php";
+		include_once dirname( __FILE__ ) . "/controllers/{$v}/class-wp-suprempay-rest-webhook-controller.php";
 
         add_action( "rest_api_init", [ $this, "register_rest_routes" ] );
     }
