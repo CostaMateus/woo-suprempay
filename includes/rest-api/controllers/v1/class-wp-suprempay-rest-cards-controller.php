@@ -46,6 +46,11 @@ class WP_SupremPay_Rest_Cards_Controller extends WP_REST_Controller
 	 */
 	protected $log;
 
+	/**
+	 * Construct
+	 *
+	 * @since 	1.0.0
+	 */
 	public function __construct()
 	{
 		$this->log = ( function_exists( "wc_get_logger" ) ) ? wc_get_logger() : new WC_Logger();
