@@ -255,6 +255,10 @@ class WC_SupremPay_API
 			case "pix":
 				return $this->do_payment_pix( $data );
 			break;
+
+			case "ticket":
+				return $this->do_payment_ticket( $data );
+			break;
 		}
 	}
 
@@ -413,6 +417,7 @@ class WC_SupremPay_API
 
 		$params   = [
 			"token_api"   => $this->gateway->get_token_user(),
+
 			"description" => substr( $descrip, 0, 150 ),
 			"expiration"  => $pixDate,
 			"amount"      => $amount,
@@ -467,59 +472,65 @@ class WC_SupremPay_API
 	 */
 	private function do_payment_ticket( $data )
 	{
-		$header   = [];
-
 		$tic_date = $this->gateway->get_ticket_due_date();
 		$due_date = date( "Y-m-d" ) . " +{$tic_date} days";
-		$due_date = date( "Y-m-d", strtotime( $due_date ) );
+		$due_date = date( "d/m/Y", strtotime( $due_date ) );
 
 		$prefix   = $this->gateway->get_invoice_prefix();
-		$orderId  = "#{$prefix}{$data[ "order_id" ]}";
-		$descript = "Pagamento do pedido {$orderId}";
+		$order    = $data[ "order" ];
+		$descrip  = "#{$prefix}{$order->get_id()} | {$data["name"]}";
 
-		$zipcode  = preg_replace( "/\D/", "", $data[ "zipcode" ] );
-
-		$value    = ( float ) $data[ "total" ];
+		$amount   = ( float ) $data[ "amount" ];
 
 		$params   = [
-			"value"       => $value, // reais
-			"dueDate"     => $due_date,
-			"orderNumber" => $orderId,
-			"description" => $descript,
-			"installment" => 1,
-			"toPerson"    => [
-				"name"         => $data[ "name"         ],
-				"document"     => $data[ "cpf"          ],
-				"street"       => $data[ "street"       ],
-				"neighborhood" => $data[ "neighborhood" ],
-				"city"         => $data[ "city"         ],
-				"uf"           => $data[ "uf"           ],
-				"email"        => $data[ "email"        ],
-				"ddd"          => $data[ "ddd"          ],
-				"phone"        => $data[ "phone"        ],
-				"zipcode"      => $zipcode,
-			]
+			"token_api"      => $this->gateway->get_token_user(),
+
+			"reference"      => $order->get_id(),
+			"guid_reference" => $descrip,
+			"name"           => $data[ "name"         ],
+			"email"          => $data[ "email"        ],
+			"document"       => $data[ "document"     ],
+			"area_code"      => $data[ "area_code"    ],
+			"phone_number"   => $data[ "phone_number" ],
+			"zip_code"       => $data[ "zip_code"     ],
+			"address"        => $data[ "address"      ],
+			"district"       => $data[ "district"     ],
+			"city"           => $data[ "city"         ],
+			"state"          => $data[ "state"        ],
+			"due_date"       => $due_date,
+			"amount"         => $amount,
 		];
 
-		$response = $this->exec( "invoice", "POST", $header, $params );
+		$response = $this->exec( "v2/billet/set", "POST", [], $params );
 
-		if ( $response[ "success" ] )
+		if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "success" ] )
 		{
-			$user   = $data[ "user" ];
-			$tokens = get_user_meta( $user->ID, "_suprempay_tokens", true );
-
-			$response[ "data" ] = ( isset( $response[ "data" ][ 0 ] ) ) ? $response[ "data" ][ 0 ] : $response[ "data" ];
+			$customer_id = $order->get_customer_id();
+			$tokens      = get_user_meta( $customer_id, "_suprempay_tokens", true );
+			$info        = $response[ "data" ][ "info" ];
 
 			if ( empty( $tokens ) )
 			{
-				$tokens = [ "payments" => [ $data[ "order_id" ] => $response[ "data" ][ "paymentId" ] ] ];
+				$tokens = [
+					"payments" => [
+						$order->get_id() => [
+							"type"           => "ticket",
+							"payment_id"     => $info[ "token_billet"   ],
+							"digitable_line" => $info[ "digitable_line" ],
+						]
+					],
+				];
 			}
 			else
 			{
-				$tokens[ "payments" ][ $data[ "order_id" ] ] = $response[ "data" ][ "paymentId" ];
+				$tokens[ "payments" ][ $order->get_id() ] = [
+					"type"           => "ticket",
+					"payment_id"     => $info[ "token_billet"   ],
+					"digitable_line" => $info[ "digitable_line" ],
+				];
 			}
 
-			update_user_meta( $user->ID, "_suprempay_tokens", $tokens );
+			update_user_meta( $customer_id, "_suprempay_tokens", $tokens );
 		}
 
 		return $response;
