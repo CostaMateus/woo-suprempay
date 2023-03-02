@@ -507,7 +507,6 @@ class WC_SupremPay_API
 		{
 			$customer_id = $order->get_customer_id();
 			$tokens      = get_user_meta( $customer_id, "_suprempay_tokens", true );
-			$info        = $response[ "data" ][ "info" ];
 
 			if ( empty( $tokens ) )
 			{
@@ -515,8 +514,8 @@ class WC_SupremPay_API
 					"payments" => [
 						$order->get_id() => [
 							"type"           => "ticket",
-							"payment_id"     => $info[ "token_billet"   ],
-							"digitable_line" => $info[ "digitable_line" ],
+							"payment_id"     => $response[ "data" ][ "token_billet"   ],
+							"digitable_line" => $response[ "data" ][ "digitable_line" ],
 						]
 					],
 				];
@@ -525,8 +524,8 @@ class WC_SupremPay_API
 			{
 				$tokens[ "payments" ][ $order->get_id() ] = [
 					"type"           => "ticket",
-					"payment_id"     => $info[ "token_billet"   ],
-					"digitable_line" => $info[ "digitable_line" ],
+					"payment_id"     => $response[ "data" ][ "token_billet"   ],
+					"digitable_line" => $response[ "data" ][ "digitable_line" ],
 				];
 			}
 
