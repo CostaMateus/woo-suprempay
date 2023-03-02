@@ -751,13 +751,12 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			$order->update_status( "on-hold", __( "SupremPay: Aguardando pagamento", $this->domain ) );
 		}
 
-		if ( $method == "ticket" && isset( $response[ "data" ][ "info" ] ) )
+		if ( $method == "ticket" && isset( $response[ "data" ] ) )
 		{
-			$info = $response[ "data" ][ "info" ];
 			$data = [
 				"type" => $method,
-				"link" => $info[ "link"           ],
-				"code" => $info[ "digitable_line" ],
+				"link" => $response[ "data" ][ "link"           ],
+				"code" => $response[ "data" ][ "digitable_line" ],
 			];
 
 			$order->update_meta_data( "_suprempay_code", $data );
@@ -961,23 +960,11 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				</div>
 				<input type="hidden" value="<?php echo $code; ?>" id="copiar" >
 
-				<?php
-					if ( $data[ "type" ] == "pix" )
-					{
-				?>
-						<img style="cursor:pointer; display:initial; max-width:350px!important;" class="supremcash-pix-img-copy-code" onclick="copyCode()"
-							src="<?php echo $link; ?>" alt="QR Code"  />
-				<?php
-					}
-					else
-					{
-				?>
-						<a class="supremcash-pix-p" style="font-size:14px; margin-bottom:0;" href="<?php echo $link; ?>" target="_blank" >
-							Acessar boleto
-						</a>
-				<?php
-					}
-				?>
+				<?php if ( $data[ "type" ] == "pix" ) { ?>
+						<img style="cursor:pointer; display:initial; max-width:350px!important;" class="supremcash-pix-img-copy-code" onclick="copyCode()" src="<?php echo $link; ?>" alt="QR Code" />
+				<?php }	else { ?>
+						<a class="supremcash-pix-p" style="font-size:22px; margin-bottom:0;" href="<?php echo $link; ?>" target="_blank" >Acessar boleto</a>
+				<?php } ?>
 				<br>
 				<p class="supremcash-pix-p" style="font-size:14px; margin-bottom:0; word-break:break-all;" ><?php echo $code; ?></p>
 				<br>
