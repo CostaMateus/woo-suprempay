@@ -44,7 +44,7 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 	 * @var 	WC_Payment_Gateway
 	 * @since 	1.0.0
 	 */
-	protected $suprempay = null;
+	protected $suprempay  = null;
 
 	/**
 	 * Status of billet webhook.
@@ -52,7 +52,7 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 	 * @var 	array
 	 * @since 	1.0.0
 	 */
-	protected $status_bil = [
+	protected $status_tkt = [
 		1 => "recebido", // pago
 		2 => "gerado",
 		3 => "pendente",
@@ -115,7 +115,7 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 			[
 				[
 					"methods"             => WP_REST_Server::CREATABLE, // POST
-                    "callback"            => [ $this, "billet" ],
+                    "callback"            => [ $this, "ticket" ],
                     "permission_callback" => "__return_true",
                 ],
 			]
@@ -153,7 +153,7 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 	 * @param 	WP_REST_Request $data
 	 * @return 	WP_REST_Response
 	 */
-	public function billet( WP_REST_Request $request )
+	public function ticket( WP_REST_Request $request )
 	{
 		$params   = $request->get_params();
 		$order_id = null;
@@ -167,7 +167,7 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 				$status = $params[ "code_status" ];
 				$order  = wc_get_order( $order_id );
 
-				$order->add_order_note( "SupremPay: Pagamento {$this->status_bil[ $status ]}" );
+				$order->add_order_note( "SupremPay: Pagamento {$this->status_tkt[ $status ]}" );
 
 				if ( $status == "1" ) $order->update_status( "processing" );
 
