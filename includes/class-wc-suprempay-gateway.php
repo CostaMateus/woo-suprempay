@@ -86,30 +86,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $pix_message;
 
 	/**
-	 * CC title.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $cc;
-
-	/**
-	 * CC type.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $cc_type;
-
-	/**
-	 * Installment.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $installment;
-
-	/**
 	 * Ticket title.
 	 *
 	 * @var 	string
@@ -132,6 +108,30 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 * @since 	1.0.0
 	 */
 	protected $ticket_message;
+
+	/**
+	 * CC title.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $cc;
+
+	/**
+	 * CC type.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $cc_type;
+
+	/**
+	 * Installment.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $installment;
 
 	/**
 	 * Invoice prefix.
@@ -205,15 +205,15 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		$this->pix               = $this->get_option( "pix"                        );
 		$this->pix_due_date      = $this->get_option( "pix_due_date", "15"         );
-		$this->pix_message       = $this->get_option( "pix_message", "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento." );
+		$this->ticket            = $this->get_option( "ticket"                     );
+		$this->ticket_due_date   = $this->get_option( "ticket_due_date", "2"       );
+
+		$this->pix_message       = $this->get_option( "pix_message",    "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento."    );
+		$this->ticket_message    = $this->get_option( "ticket_message", "Utilize o aplicativo do seu banco para ler o código de barras ou copiar o código abaixo e efetuar o pagamento." );
 
         // $this->cc                = $this->get_option( "cc"                         );
         // $this->cc_type           = $this->get_option( "cc_type",         "avista"  );
         // $this->installment       = $this->get_option( "installment",     "1"       );
-
-		// $this->ticket            = $this->get_option( "ticket"                     );
-		// $this->ticket_due_date   = $this->get_option( "ticket_due_date", "2"       );
-		// $this->ticket_message    = "Utilize o aplicativo do seu banco para ler o código de barras ou copiar o código abaixo e efetuar o pagamento.";
 
 		$this->invoice_prefix    = $this->get_option( "invoice_prefix",  "WC-"     );
         $this->debug             = $this->get_option( "debug",           "yes"     );
@@ -299,7 +299,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 * Get log
 	 *
 	 * @since 	1.0.0
-	 * @return 	string
+	 * @return 	wc_get_logger|WC_Logger
 	 */
 	public function get_log()
 	{
@@ -438,12 +438,12 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
             "pix"              => [
                 "type"    => "checkbox",
                 "title"   => __( "Pagamento por PIX",                           $this->domain ),
-                "label"   => __( "Ativar pix no checkout",                      $this->domain ),
+                "label"   => __( "Ativar PIX no checkout",                      $this->domain ),
                 "default" => "yes",
             ],
 			"pix_due_date"     => [
 				"type"        => "number",
-				"title"       => __( "Validade do QRCode do pix",               $this->domain ),
+				"title"       => __( "Validade do QRCode do PIX",               $this->domain ),
 				"description" => __( "Informe qual o prazo de validade do
 									  QRCode do PIX, em minutos.<br>Mínimo 5.", $this->domain ),
 				"default"     => 2,
@@ -459,6 +459,41 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 									  uso do QRCode que o usuário vê na
 									  finalização do pedido.",                  $this->domain ),
 				"default"     => "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento.",
+				// "desc_tip"    => true,
+			],
+
+			// boleto
+			"ticket_title"     => [
+				"title"       => __( "Boleto",                                  $this->domain ),
+				"type"        => "title",
+				"description" => "",
+			],
+			"ticket"           => [
+				"type"    => "checkbox",
+                "title"   => __( "Pagamento por boleto bancário",               $this->domain ),
+				"label"   => __( "Ativar boleto bancário no checkout",          $this->domain ),
+				"default" => "yes",
+            ],
+			"ticket_due_date"  => [
+				"type"        => "number",
+				"title"       => __( "Validade do boleto",                      $this->domain ),
+				"description" => __( "Informe qual o prazo de validade do
+									  boleto bancário, em dias.<br>
+									  Mínimo 1, máximo 30.",                    $this->domain ),
+				"default"     => 2,
+				"custom_attributes" => [
+					"maxlength" => 2,
+					"min"       => 1,
+					"max"       => 30,
+				],
+            ],
+			"ticket_message"   => [
+				"type"        => "text",
+				"title"       => __( "Mensagem boleto bancário",                $this->domain ),
+				"description" => __( "Controla a mensagem de instrução para
+									  uso do código de barras que o usuário
+									  vê na finalização do pedido.",            $this->domain ),
+				"default"     => "Utilize o aplicativo do seu banco para ler o código de barras ou copiar o código abaixo e efetuar o pagamento.",
 				// "desc_tip"    => true,
 			],
 
@@ -498,26 +533,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			// 		"maxlength"   => 2,
 			// 		"min"         => 1,
 			// 		"max"         => 99,
-			// 	],
-            // ],
-
-			// // boleto
-			// "ticket_title"    => [ "type" => "title" ],
-			// "ticket"          => [
-			// 	"type"    => "checkbox",
-            //     "title"   => __( "Boleto bancário",                                                         $this->domain ),
-			// 	"label"   => __( "Ativar boleto bancário no checkoutt",                                     $this->domain ),
-			// 	"default" => "yes",
-            // ],
-			// "ticket_due_date" => [
-			// 	"type"        => "number",
-			// 	"title"       => __( "Validade do boleto",                                                  $this->domain ),
-			// 	"description" => __( "Informe qual o prazo de validade do boleto bancário, em dias.<br>
-			// 						  Mínimo 1.",                                                           $this->domain ),
-			// 	"default"     => 2,
-			// 	"custom_attributes" => [
-			// 		"maxlength" => 2,
-			// 		"min"       => 1,
 			// 	],
             // ],
 
@@ -694,7 +709,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		// if ( $method == "cc"     ) $data = $this->process_data_cc( $order );
 		if ( $method == "pix"    ) $data = $this->process_data_pix( $order );
-		// if ( $method == "ticket" ) $data = $this->process_data_ticket( $order );
+		if ( $method == "ticket" ) $data = $this->process_data_ticket( $order );
 
 		$response = $this->api->do_payment( $method, $data );
 
@@ -723,10 +738,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		// 	$order->update_status( "processing", __( "SupremPay: Pagamento aprovado", $this->domain ) );
 		// }
 
-		if ( $method == "pix" && isset( $response[ "data" ][ "info" ] ) )
+		if ( $method == "pix"    && isset( $response[ "data" ][ "info" ] ) )
 		{
 			$info = $response[ "data" ][ "info" ];
-
 			$data = [
 				"type" => $method,
 				"link" => $info[ "pix_wallet" ],
@@ -737,18 +751,18 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			$order->update_status( "on-hold", __( "SupremPay: Aguardando pagamento", $this->domain ) );
 		}
 
-		// if ( $method == "ticket" && isset( $response[ "data" ][ "paymentId" ] ) && isset( $response[ "data" ][ "barcode" ]) )
-		// {
-		// 	$data = [
-		// 		"type"           => $method,
-		// 		"barcode"        => $response[ "data" ][ "barcode"       ],
-		// 		"digitable_line" => $response[ "data" ][ "digitableLine" ],
-		// 	];
+		if ( $method == "ticket" && isset( $response[ "data" ][ "info" ] ) )
+		{
+			$info = $response[ "data" ][ "info" ];
+			$data = [
+				"type" => $method,
+				"link" => $info[ "link"           ],
+				"code" => $info[ "digitable_line" ],
+			];
 
-		// 	// Mark as on-hold (we're awaiting the payment)
-		// 	$order->update_meta_data( "_suprempay_code", $data );
-		// 	$order->update_status( "on-hold", __( "SupremPay: Aguardando pagamento", $this->domain ) );
-		// }
+			$order->update_meta_data( "_suprempay_code", $data );
+			$order->update_status( "on-hold", __( "SupremPay: Aguardando pagamento", $this->domain ) );
+		}
 
 		$order->save();
 
@@ -850,28 +864,32 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 */
 	private function process_data_ticket( $order )
 	{
-		$cpf         = preg_replace( "/[^0-9]/", "", WC()->checkout()->get_value( "billing_cpf" ) );
-		$firstName   = WC()->checkout()->get_value( "billing_first_name" );
-		$lastName    = WC()->checkout()->get_value( "billing_last_name"  );
-		$name        = "{$firstName} {$lastName}";
+		$document     = preg_replace( "/[^0-9]/", "", WC()->checkout()->get_value( "billing_cpf" ) );
+		$firstName    = WC()->checkout()->get_value( "billing_first_name" );
+		$lastName     = WC()->checkout()->get_value( "billing_last_name"  );
+		$name         = "{$firstName} {$lastName}";
 
-		$fullPhone   = preg_replace( "/[^0-9]/", "", WC()->checkout()->get_value( "billing_phone" ) );
-		$ddd         = substr( $fullPhone, 0, 2 );
-		$phone       = substr( $fullPhone, 2 );
+		$fullPhone    = preg_replace( "/[^0-9]/", "", WC()->checkout()->get_value( "billing_phone" ) );
+		$area_code    = substr( $fullPhone, 0, 2 );
+		$phone_number = substr( $fullPhone, 2 );
 
-		$data        = [
-			"total"        => $order->get_total(),
-			"order_id"     => $order->get_id(),
+		$zip_code     = preg_replace( "/[^0-9]/", "", WC()->checkout()->get_value( "billing_postcode" ) );
+
+		$data         = [
+			"order"        => $order,
+			"amount"       => $order->get_total(),
+
 			"name"         => $name,
-			"cpf"          => $cpf,
-			"ddd"          => $ddd,
-			"phone"        => $phone,
-			"street"       => WC()->checkout()->get_value( "billing_address_1"    ),
-			"neighborhood" => WC()->checkout()->get_value( "billing_neighborhood" ),
-			"city"         => WC()->checkout()->get_value( "billing_city"         ),
-			"uf"           => WC()->checkout()->get_value( "billing_state"        ),
-			"zipcode"      => WC()->checkout()->get_value( "billing_postcode"     ),
 			"email"        => WC()->checkout()->get_value( "billing_email"        ),
+			"document"     => $document,
+			"area_code"    => $area_code,
+			"phone_number" => $phone_number,
+			"zip_code"     => $zip_code,
+
+			"address"      => WC()->checkout()->get_value( "billing_address_1"    ),
+			"district"     => WC()->checkout()->get_value( "billing_neighborhood" ),
+			"city"         => WC()->checkout()->get_value( "billing_city"         ),
+			"state"        => WC()->checkout()->get_value( "billing_state"        ),
 		];
 
 		return $data;
@@ -896,7 +914,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		if ( !$code ) return;
 
 		// only pix/ticket
-		return $this->render_code( $code, $order_id );
+		return $this->render_code( $code );
 	}
 
 	/**
@@ -916,7 +934,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		if ( !$code ) return;
 
 		// only pix/ticket
-		return $this->render_code( $code, $order->get_id(), true );
+		return $this->render_code( $code );
 	}
 
 	/**
@@ -927,21 +945,12 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 * @param 	int 	$order_id
 	 * @return 	void
 	 */
-	public function render_code( $data, $order_id )
+	public function render_code( $data )
 	{
-		if ( $data[ "type" ] == "pix" )
-		{
-			$link = $data[ "link" ];
-			$code = $data[ "code" ];
-			$msg  = $this->pix_message ?? "TEST MESSAGE";
-		}
-		// else
-		// {
-		// 	$bc   = $data[ "barcode"        ];
-		// 	$link = $data[ "digitable_line" ];
-		// 	$code = $this->generate_code( $bc, "ticket" );
-		// 	$msg  = $this->ticket_message;
-		// }
+		$link = $data[ "link" ];
+		$code = $data[ "code" ];
+
+		$msg  = ( $data[ "type" ] == "pix" ) ? $this->pix_message : $this->ticket_message;
 
 		if ( !empty( $link ) )
 		{
@@ -951,8 +960,24 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 					<?php echo $msg; ?>
 				</div>
 				<input type="hidden" value="<?php echo $code; ?>" id="copiar" >
-				<img style="cursor:pointer; display:initial; max-width:350px!important;" class="supremcash-pix-img-copy-code" onclick="copyCode()"
-					src="<?php echo $link; ?>" alt="QR Code"  />
+
+				<?php
+					if ( $data[ "type" ] == "pix" )
+					{
+				?>
+						<img style="cursor:pointer; display:initial; max-width:350px!important;" class="supremcash-pix-img-copy-code" onclick="copyCode()"
+							src="<?php echo $link; ?>" alt="QR Code"  />
+				<?php
+					}
+					else
+					{
+				?>
+						<a class="supremcash-pix-p" style="font-size:14px; margin-bottom:0;" href="<?php echo $link; ?>" target="_blank" >
+							Acessar boleto
+						</a>
+				<?php
+					}
+				?>
 				<br>
 				<p class="supremcash-pix-p" style="font-size:14px; margin-bottom:0; word-break:break-all;" ><?php echo $code; ?></p>
 				<br>
