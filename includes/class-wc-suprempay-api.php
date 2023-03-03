@@ -102,7 +102,7 @@ class WC_SupremPay_API
 	public function __construct( $gateway = null )
     {
 		$this->gateway = $gateway;
-		$this->register_weehook();
+		$this->register_webhook();
 	}
 
 	/**
@@ -541,43 +541,48 @@ class WC_SupremPay_API
 	 * @since 	1.0.0
 	 * @return 	void
 	 */
-	private function register_weehook()
+	private function register_webhook()
 	{
-		if ( defined( "SUPREMPAY_WH_BIL" ) && defined( "SUPREMPAY_WH_PIX" ) && defined( "SUPREMPAY_WH_TED" ) ) return;
-
-        $v         = WC_SUPREMPAY_REST_API_VER;
+		$v         = WC_SUPREMPAY_REST_API_VER;
+		$options   = [
+			"bil" => "supremapay_bil_webhook_registered",
+			"pix" => "supremapay_pix_webhook_registered",
+			"ted" => "supremapay_ted_webhook_registered",
+		];
 		$endpoints = [
-			"BIL" => [
+			"bil" => [
 				"token_api" => $this->gateway->get_token_user(),
 				"service"   => "collection-billet",
 				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/billet" ),
 			],
-			"PIX" => [
+			"pix" => [
 				"token_api" => $this->gateway->get_token_user(),
 				"service"   => "collection-pix",
 				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/pix"    ),
 			],
-			"TED" => [
+			"ted" => [
 				"token_api" => $this->gateway->get_token_user(),
 				"service"   => "collection-ted",
 				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/ted"    ),
 			],
 		];
 
-		foreach ( $endpoints as $key => $endpoint )
+		foreach ( $options as $key => $option )
 		{
-			$this->log( json_encode( $endpoint ) );
+			if ( !get_option( $option ) )
+			{
+				$response = $this->exec( "webhook/set", "POST", [], $endpoints[ $key ] );
 
-			$response = $this->exec( "webhook/set", "POST", [], $endpoint );
-
-			if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "success" ] )
-				define( "SUPREMPAY_WH_{$key}", true );
-
-			/**
-			 * TODO remover na finalização do plugin
-			 */
-			if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "message" ] == "Please enter a valid url!" )
-				define( "SUPREMPAY_WH_{$key}", true );
+				if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "success" ] )
+				{
+					$this->log( "INFO - SupremPay webhook {$endpoints[ $key ][ "service" ]}: successfully registered." );
+					add_option( $option, 1 );
+				}
+				else
+				{
+					$this->log( "INFO - SupremPay webhook {$endpoints[ $key ][ "service" ]}: failed to register, will attempt again soon!" );
+				}
+			}
 		}
 	}
 
