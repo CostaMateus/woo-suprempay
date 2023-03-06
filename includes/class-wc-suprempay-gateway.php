@@ -1010,23 +1010,11 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		{
 			$code = $order->get_meta( "_suprempay_code" );
 
-			if ( $code[ "type" ] == "pix" )
-			{
-				$data  = [
-					"link"    => $code[ "link" ],
-					"code"    => $code[ "code" ],
-					"message" => $this->pix_message ?? "TEST MESSAGE",
-				];
-			}
-			// else
-			// {
-			// 	$image = $this->generate_code( $code[ "barcode" ], "ticket" );
-			// 	$data  = [
-			// 		"link"    => $code[ "barcode" ],
-			// 		"image"   => $image,
-			// 		"message" => $this->ticket_message,
-			// 	];
-			// }
+			$data = [
+				"link"    => $code[ "link" ],
+				"code"    => $code[ "code" ],
+				"message" => ( $code[ "type" ] == "pix" ) ? $this->pix_message : $this->ticket_message,
+			];
 
 			wc_get_template(
 				"email-on-hold.php",
