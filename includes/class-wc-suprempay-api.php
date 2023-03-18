@@ -413,12 +413,16 @@ class WC_SupremPay_API
 		$descrip  = "#{$prefix}{$order->get_id()} | {$data["name"]}";
 
 		$amount   = ( float ) $data[ "amount" ];
-		$email    = $data[ "email" ];
+		$email    = $data[ "email"    ];
+		$name     = $data[ "name"     ];
+		$document = $data[ "document" ];
 
 		$params   = [
 			"token_api"   => $this->gateway->get_token_user(),
 
 			"description" => substr( $descrip, 0, 150 ),
+			"name"        => $name,
+			"document"    => $document,
 			"expiration"  => $pixDate,
 			"amount"      => $amount,
 			"email"       => $email,

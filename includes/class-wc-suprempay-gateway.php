@@ -844,11 +844,18 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		$last  = WC()->checkout()->get_value( "billing_last_name"  );
 		$name  = "{$first} {$last}";
 
+		$cpf   = WC()->checkout()->get_value( "billing_cpf"  );
+		$cnpj  = WC()->checkout()->get_value( "billing_cnpj" );
+
+		$doc   = ( !empty( $cpf ) ) ? $cpf : $cnpj;
+		$doc   = preg_replace( "/[^0-9]/", "", $doc );
+
 		$data  = [
-			"order"  => $order,
-			"name"   => $name,
-			"email"  => $email,
-			"amount" => $order->get_total(),
+			"order"    => $order,
+			"name"     => $name,
+			"email"    => $email,
+			"amount"   => $order->get_total(),
+			"document" => $doc,
 		];
 
 		return $data;
