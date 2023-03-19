@@ -412,7 +412,7 @@ class WC_SupremPay_API
 		$order    = $data[ "order" ];
 		$descrip  = "#{$prefix}{$order->get_id()} | {$data["name"]}";
 
-		$amount   = ( float ) $data[ "amount" ];
+		$amount   = number_format( $data[ "amount" ], 2, ",", "" );
 		$email    = $data[ "email"    ];
 		$name     = $data[ "name"     ];
 		$document = $data[ "document" ];
@@ -484,7 +484,7 @@ class WC_SupremPay_API
 		$order    = $data[ "order" ];
 		$descrip  = "#{$prefix}{$order->get_id()} | {$data["name"]}";
 
-		$amount   = ( float ) $data[ "amount" ];
+		$amount   = number_format( $data[ "amount" ], 2, ",", "" );
 
 		$params   = [
 			"token_api"      => $this->gateway->get_token_user(),
