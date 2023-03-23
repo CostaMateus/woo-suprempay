@@ -62,7 +62,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $token_integr;
 
 	/**
-	 * PIX title.
+	 * PIX option.
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -86,7 +86,55 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $pix_message;
 
 	/**
-	 * Ticket title.
+	 * TED option.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $ted;
+
+	/**
+	 * TED bank.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $ted_bank;
+
+	/**
+	 * TED bank agency.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $ted_agency;
+
+	/**
+	 * TED bank account.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $ted_account;
+
+	/**
+	 * TED bank receiver.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $ted_receiver;
+
+	/**
+	 * TED receiver cnpj.
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $ted_cnpj;
+
+	/**
+	 * Ticket option.
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -194,30 +242,35 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		$this->init_settings();
 
         // Define user set variables.
-        $this->title             = $this->get_option( "title"                      );
-        $this->description       = $this->get_option( "description"                );
+        $this->title            = $this->get_option( "title"                );
+        $this->description      = $this->get_option( "description"          );
 
-        $this->is_homol          = $this->get_option( "is_homol", "yes"            );
-        $this->token_user_hml    = $this->get_option( "token_user_hml"             );
-        $this->token_user        = $this->get_option( "token_user"                 );
-        $this->token_integr_hml  = $this->get_option( "token_integr_hml"           );
-        $this->token_integr      = $this->get_option( "token_integr"               );
+        $this->is_homol         = $this->get_option( "is_homol", "yes"      );
+        $this->token_user_hml   = $this->get_option( "token_user_hml"       );
+        $this->token_user       = $this->get_option( "token_user"           );
+        $this->token_integr_hml = $this->get_option( "token_integr_hml"     );
+        $this->token_integr     = $this->get_option( "token_integr"         );
 
-		$this->pix               = $this->get_option( "pix"                        );
-		$this->pix_due_date      = $this->get_option( "pix_due_date", "15"         );
-		$this->ticket            = $this->get_option( "ticket"                     );
-		$this->ticket_due_date   = $this->get_option( "ticket_due_date", "2"       );
+		// Pix and ticket configs
+		$this->pix              = $this->get_option( "pix"                  );
+		$this->pix_due_date     = $this->get_option( "pix_due_date", "15"   );
+		$this->ticket           = $this->get_option( "ticket"               );
+		$this->ticket_due_date  = $this->get_option( "ticket_due_date", "2" );
 
-		$this->pix_message       = $this->get_option( "pix_message",    "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento."    );
-		$this->ticket_message    = $this->get_option( "ticket_message", "Utilize o aplicativo do seu banco para ler o código de barras ou copiar o código abaixo e efetuar o pagamento." );
+		// TED configs
+		$this->ted              = $this->get_option( "ted"                                                );
+		$this->ted_bank         = $this->get_option( "ted_bank", "756 - Banco Cooperativo do Brasil SA"   );
+		$this->ted_agency       = $this->get_option( "ted_agency", "3333-2"                               );
+		$this->ted_account      = $this->get_option( "ted_account", "4353-2"                              );
+		$this->ted_receiver     = $this->get_option( "ted_receiver", "360 NEW SOLUCOES TECNOLOGICAS LTDA" );
+		$this->ted_cnpj         = $this->get_option( "ted_cnpj", "29.082.022/0001-20"                     );
 
-        // $this->cc                = $this->get_option( "cc"                         );
-        // $this->cc_type           = $this->get_option( "cc_type",         "avista"  );
-        // $this->installment       = $this->get_option( "installment",     "1"       );
+		// Pix and ticket messages
+		$this->pix_message      = $this->get_option( "pix_message",    "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento."    );
+		$this->ticket_message   = $this->get_option( "ticket_message", "Utilize o aplicativo do seu banco para ler o código de barras ou copiar o código abaixo e efetuar o pagamento." );
 
-		$this->invoice_prefix    = $this->get_option( "invoice_prefix",  "WC-"     );
-        $this->debug             = $this->get_option( "debug",           "yes"     );
-        // $this->cc_hide_cpf_field = apply_filters( "suprempay_hide_cpf_field", false );
+		$this->invoice_prefix   = $this->get_option( "invoice_prefix",  "WC-" );
+        $this->debug            = $this->get_option( "debug",           "yes" );
 
         // Active logs.
         if ( $this->debug === "yes" ) $this->log = ( function_exists( "wc_get_logger" ) ) ? wc_get_logger() : new WC_Logger();
@@ -460,6 +513,55 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 									  finalização do pedido.",                  $this->domain ),
 				"default"     => "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento.",
 				// "desc_tip"    => true,
+			],
+
+			// transferencia bancaria
+			"ted_title"        => [
+				"title"       => __( "Transferência bancária - TED",            $this->domain ),
+				"type"        => "title",
+				"description" => "",
+			],
+            "ted"              => [
+                "type"    => "checkbox",
+                "title"   => __( "Pagamento por TED",                           $this->domain ),
+                "label"   => __( "Ativar TED no checkout",                      $this->domain ),
+                "default" => "yes",
+            ],
+			"ted_detail"       => [
+				"title"       => __( "Detalhes da conta SupremCash
+									  beneficiária",                            $this->domain ),
+				"type"        => "title",
+				"description" => "",
+			],
+			"ted_bank"         => [
+				"type"        => "text",
+				"title"       => __( "Banco",                                   $this->domain ),
+				"description" => __( "Número e nome do banco",                  $this->domain ),
+				"default"     => "756 - Banco Cooperativo do Brasil SA",
+			],
+			"ted_agency"       => [
+				"type"        => "text",
+				"title"       => __( "Agência",                                 $this->domain ),
+				"description" => __( "Número da agência, incluindo dígito",     $this->domain ),
+				"default"     => "3333-2",
+			],
+			"ted_account"      => [
+				"type"        => "text",
+				"title"       => __( "Conta corrente",                          $this->domain ),
+				"description" => __( "Número da conta, incluindo dígito",       $this->domain ),
+				"default"     => "4353-2",
+			],
+			"ted_receiver"     => [
+				"type"        => "text",
+				"title"       => __( "Beneficiário",                            $this->domain ),
+				"description" => __( "Nome completo do beneficiário",           $this->domain ),
+				"default"     => "360 NEW SOLUCOES TECNOLOGICAS LTDA",
+			],
+			"ted_cnpj"         => [
+				"type"        => "text",
+				"title"       => __( "CNPJ",                                    $this->domain ),
+				"description" => __( "CNPJ do beneficiário",                    $this->domain ),
+				"default"     => "29.082.022/0001-20",
 			],
 
 			// boleto
