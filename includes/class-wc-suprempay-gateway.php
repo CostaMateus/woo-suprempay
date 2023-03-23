@@ -86,54 +86,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $pix_message;
 
 	/**
-	 * TED option.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $ted;
-
-	/**
-	 * TED bank.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $ted_bank;
-
-	/**
-	 * TED bank agency.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $ted_agency;
-
-	/**
-	 * TED bank account.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $ted_account;
-
-	/**
-	 * TED bank receiver.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $ted_receiver;
-
-	/**
-	 * TED receiver cnpj.
-	 *
-	 * @var 	string
-	 * @since 	1.0.0
-	 */
-	protected $ted_cnpj;
-
-	/**
 	 * Ticket option.
 	 *
 	 * @var 	string
@@ -256,14 +208,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		$this->pix_due_date     = $this->get_option( "pix_due_date", "15"   );
 		$this->ticket           = $this->get_option( "ticket"               );
 		$this->ticket_due_date  = $this->get_option( "ticket_due_date", "2" );
-
-		// TED configs
-		$this->ted              = $this->get_option( "ted"                                                );
-		$this->ted_bank         = $this->get_option( "ted_bank", "756 - Banco Cooperativo do Brasil SA"   );
-		$this->ted_agency       = $this->get_option( "ted_agency", "3333-2"                               );
-		$this->ted_account      = $this->get_option( "ted_account", "4353-2"                              );
-		$this->ted_receiver     = $this->get_option( "ted_receiver", "360 NEW SOLUCOES TECNOLOGICAS LTDA" );
-		$this->ted_cnpj         = $this->get_option( "ted_cnpj", "29.082.022/0001-20"                     );
 
 		// Pix and ticket messages
 		$this->pix_message      = $this->get_option( "pix_message",    "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento."    );
@@ -515,54 +459,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				// "desc_tip"    => true,
 			],
 
-			// transferencia bancaria
-			"ted_title"        => [
-				"title"       => __( "Transferência bancária - TED",            $this->domain ),
-				"type"        => "title",
-				"description" => "",
-			],
-            "ted"              => [
-                "type"    => "checkbox",
-                "title"   => __( "Pagamento por TED",                           $this->domain ),
-                "label"   => __( "Ativar TED no checkout",                      $this->domain ),
-                "default" => "yes",
-            ],
-			"ted_detail"       => [
-				"title"       => __( "",                                        $this->domain ),
-				"type"        => "title",
-				"description" => "Detalhes da conta SupremCash beneficiária",
-			],
-			"ted_bank"         => [
-				"type"        => "text",
-				"title"       => __( "Banco",                                   $this->domain ),
-				"description" => __( "Número e nome do banco",                  $this->domain ),
-				"default"     => "756 - Banco Cooperativo do Brasil SA",
-			],
-			"ted_agency"       => [
-				"type"        => "text",
-				"title"       => __( "Agência",                                 $this->domain ),
-				"description" => __( "Número da agência, incluindo dígito",     $this->domain ),
-				"default"     => "3333-2",
-			],
-			"ted_account"      => [
-				"type"        => "text",
-				"title"       => __( "Conta corrente",                          $this->domain ),
-				"description" => __( "Número da conta, incluindo dígito",       $this->domain ),
-				"default"     => "4353-2",
-			],
-			"ted_receiver"     => [
-				"type"        => "text",
-				"title"       => __( "Beneficiário",                            $this->domain ),
-				"description" => __( "Nome completo do beneficiário",           $this->domain ),
-				"default"     => "360 NEW SOLUCOES TECNOLOGICAS LTDA",
-			],
-			"ted_cnpj"         => [
-				"type"        => "text",
-				"title"       => __( "CNPJ",                                    $this->domain ),
-				"description" => __( "CNPJ do beneficiário",                    $this->domain ),
-				"default"     => "29.082.022/0001-20",
-			],
-
 			// boleto
 			"ticket_title"     => [
 				"title"       => __( "Boleto",                                  $this->domain ),
@@ -727,11 +623,10 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			"checkout-form.php",
 			[
 				"cart_total"  => $this->get_order_total(),
-				// "cc"          => $this->cc          ?? "no",
+				"cc"          => $this->cc          ?? "no",
 				// "cc_type"     => $this->cc_type     ?? "avista",
 				// "installment" => $this->installment ?? "10",
 				"pix"         => $this->pix         ?? "no",
-				"ted"         => $this->ted         ?? "no",
 				"ticket"      => $this->ticket      ?? "no",
 				"flag"        => plugins_url( "assets/images/brazilian-flag.png", plugin_dir_path( __FILE__ ) ),
 				// "icon_cc"     => plugins_url( "assets/images/icon-cc.png",        plugin_dir_path( __FILE__ ) ),

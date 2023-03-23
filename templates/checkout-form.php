@@ -30,7 +30,7 @@ defined( "ABSPATH" ) || exit;
 				<label>
 					<input id="suprempay-payment-method-pix" style="margin-right:0;"
 						type="radio" name="suprempay_payment_method"
-						value="pix" <?php checked( true, ( $pix == "yes" ), true ); ?> />
+						value="pix" <?php checked( true, ( $cc == "no" && $pix == "yes" ), true ); ?> />
 					<img src="<?php echo esc_url( $icon_pix ); ?>" alt="<?php esc_attr_e( "PIX", WC_SUPREMPAY_DOMAIN ); ?>" style="display:inline; float:none; vertical-align:middle; border:none; margin-left:0;" />
 					<?php _e( "PIX", WC_SUPREMPAY_DOMAIN ); ?>
 				</label>
@@ -49,23 +49,13 @@ defined( "ABSPATH" ) || exit;
 			</li>
 		<?php endif; ?>
 
-		<?php if ( $ted    == "yes" ) : ?>
-			<li>
-				<label>
-					<input id="suprempay-payment-method-ted" style="margin-right:0;"
-						type="radio" name="suprempay_payment_method"
-						value="ted" <?php checked( true, ( $pix == "no" && $ticket == "no" && $ted == "yes" ), true ); ?> />
-					<?php _e( "TED", WC_SUPREMPAY_DOMAIN ); ?>
-				</label>
-			</li>
-		<?php endif; ?>
 	</ul>
 
 	<div class="clear"></div>
 
 	<!-- <?php // if ( $cc  == "yes" ) : ?>
 		<div id="suprempay-cc-form" class="suprempay-method-form">
-			<?php // if ( $pix == "no" && $ticket == "no" && $ted == "no" ) : ?>
+			<?php // if ( $pix == "no" && $ticket == "no" ) : ?>
 				<h4>
 					<img src="<?php // echo esc_url( $icon_cc ); ?>" alt="<?php // esc_attr_e( "PIX", WC_SUPREMPAY_DOMAIN ); ?>" style="display:inline; float:none; vertical-align:middle; border:none; margin-left:0;" />
 					<?php // _e( "Pagamento com cartão de Crédito.", WC_SUPREMPAY_DOMAIN ); ?>
@@ -188,7 +178,7 @@ defined( "ABSPATH" ) || exit;
 
 	<?php if ( $pix == "yes" ) : ?>
 		<div id="suprempay-pix-form" class="suprempay-method-form">
-			<?php if ( $ticket == "no" && $ted == "no" ) : ?>
+			<?php if ( $cc == "no" && $ticket == "no" ) : ?>
 				<h4>
 					<img src="<?php echo esc_url( $icon_pix ); ?>" alt="<?php esc_attr_e( "PIX", WC_SUPREMPAY_DOMAIN ); ?>" style="display:inline; float:none; vertical-align:middle; border:none; margin-left:0;" />
 					<?php _e( "Pagamento com PIX.", WC_SUPREMPAY_DOMAIN ); ?>
@@ -203,7 +193,7 @@ defined( "ABSPATH" ) || exit;
 
 	<?php if ( $ticket == "yes" ) : ?>
 		<div id="suprempay-ticket-form" class="suprempay-method-form">
-			<?php if ( $pix == "no" && $ted == "no" ) : ?>
+			<?php if ( $cc == "no" && $pix == "no" ) : ?>
 				<h4>
 					<img src="<?php echo esc_url( $icon_ticket ); ?>" alt="<?php esc_attr_e( "PIX", WC_SUPREMPAY_DOMAIN ); ?>" style="display:inline; float:none; vertical-align:middle; border:none; margin-left:0;" />
 					<?php _e( "Pagamento com boleto.", WC_SUPREMPAY_DOMAIN ); ?>
@@ -212,21 +202,6 @@ defined( "ABSPATH" ) || exit;
 
 			<p><?php _e( "O pedido será confirmado somente após a confirmação do pagamento.", WC_SUPREMPAY_DOMAIN ); ?></p>
 			<p><?php _e( "* Ao finalizar a compra, você terá acesso ao código de barras do boleto bancário que poderá pagar no seu internet banking ou em uma lotérica.", WC_SUPREMPAY_DOMAIN ); ?></p>
-			<div class="clear"></div>
-		</div>
-	<?php endif; ?>
-
-	<?php if ( $ted == "yes" ) : ?>
-		<div id="suprempay-ted-form" class="suprempay-method-form">
-			<?php if ( $pix == "no" && $ticket == "no" ) : ?>
-				<h4>
-					<img src="<?php echo esc_url( $icon_ticket ); ?>" alt="<?php esc_attr_e( "PIX", WC_SUPREMPAY_DOMAIN ); ?>" style="display:inline; float:none; vertical-align:middle; border:none; margin-left:0;" />
-					<?php _e( "Pagamento com boleto.", WC_SUPREMPAY_DOMAIN ); ?>
-				</h4>
-			<?php endif; ?>
-
-			<p><?php _e( "O pedido será confirmado somente após a confirmação do pagamento.", WC_SUPREMPAY_DOMAIN ); ?></p>
-			<p><?php _e( "* Ao finalizar a compra, você terá acesso aos dados bancários para realizar o TED no seu internet banking de preferência.", WC_SUPREMPAY_DOMAIN ); ?></p>
 			<div class="clear"></div>
 		</div>
 	<?php endif; ?>
