@@ -528,10 +528,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
                 "default" => "yes",
             ],
 			"ted_detail"       => [
-				"title"       => __( "Detalhes da conta SupremCash
-									  beneficiária",                            $this->domain ),
+				"title"       => __( "",                                        $this->domain ),
 				"type"        => "title",
-				"description" => "",
+				"description" => "Detalhes da conta SupremCash beneficiária",
 			],
 			"ted_bank"         => [
 				"type"        => "text",
@@ -728,13 +727,14 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			"checkout-form.php",
 			[
 				"cart_total"  => $this->get_order_total(),
-				"cc"          => $this->cc          ?? "no",
-				"cc_type"     => $this->cc_type     ?? "avista",
-				"installment" => $this->installment ?? "10",
+				// "cc"          => $this->cc          ?? "no",
+				// "cc_type"     => $this->cc_type     ?? "avista",
+				// "installment" => $this->installment ?? "10",
 				"pix"         => $this->pix         ?? "no",
+				"ted"         => $this->ted         ?? "no",
 				"ticket"      => $this->ticket      ?? "no",
 				"flag"        => plugins_url( "assets/images/brazilian-flag.png", plugin_dir_path( __FILE__ ) ),
-				"icon_cc"     => plugins_url( "assets/images/icon-cc.png",        plugin_dir_path( __FILE__ ) ),
+				// "icon_cc"     => plugins_url( "assets/images/icon-cc.png",        plugin_dir_path( __FILE__ ) ),
 				"icon_pix"    => plugins_url( "assets/images/icon-pix.png",       plugin_dir_path( __FILE__ ) ),
 				"icon_ticket" => plugins_url( "assets/images/icon-ticket.png",    plugin_dir_path( __FILE__ ) ),
 			],
