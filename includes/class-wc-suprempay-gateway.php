@@ -772,20 +772,20 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 						"messages" => [
 							"session_error"      => __( "Ocorreu um error. Por favor, atualize a página.",                         $this->domain ),
 
-							"invalid_card"       => __( "O número do cartão de crédito é inválido.",                               $this->domain ),
-							"invalid_expiry"     => __( "A data de expiração é inválida, por favor, utilize o formato MM / AAAA.", $this->domain ),
-							"invalid_cvv"        => __( "O código do cartão é inválido.",                                          $this->domain ),
-
-							"invalid_holder"     => __( "Informe o nome do titular do cartão.",                                    $this->domain ),
-							"invalid_h_cpf"      => __( "Informe o CPF/CNPJ do titular do cartão.",                                $this->domain ),
-							"invalid_h_phone"    => __( "Informe o telefone do titular do cartão.",                                $this->domain ),
-
-							"expired_date"       => __( "Por favor, verifique a data de expiração e utilize o formato MM / AAAA.", $this->domain ),
-
-							"empty_installments" => __( "Selecione o número de parcelas.",                                         $this->domain ),
-							"interest_free"      => __( "sem juros",                                                               $this->domain ),
-
-							"general_error"      => __( "Não foi possível processar os dados do seu cartão de crédito, por favor, tente novamente ou entre em contato para receber ajuda.", $this->domain ),
+							// "invalid_card"       => __( "O número do cartão de crédito é inválido.",                               $this->domain ),
+							// "invalid_expiry"     => __( "A data de expiração é inválida, por favor, utilize o formato MM / AAAA.", $this->domain ),
+							// "invalid_cvv"        => __( "O código do cartão é inválido.",                                          $this->domain ),
+							//
+							// "invalid_holder"     => __( "Informe o nome do titular do cartão.",                                    $this->domain ),
+							// "invalid_h_cpf"      => __( "Informe o CPF/CNPJ do titular do cartão.",                                $this->domain ),
+							// "invalid_h_phone"    => __( "Informe o telefone do titular do cartão.",                                $this->domain ),
+							//
+							// "expired_date"       => __( "Por favor, verifique a data de expiração e utilize o formato MM / AAAA.", $this->domain ),
+							//
+							// "empty_installments" => __( "Selecione o número de parcelas.",                                         $this->domain ),
+							// "interest_free"      => __( "sem juros",                                                               $this->domain ),
+							//
+							// "general_error"      => __( "Não foi possível processar os dados do seu cartão de crédito, por favor, tente novamente ou entre em contato para receber ajuda.", $this->domain ),
 						]
 					]
 				);
