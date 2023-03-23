@@ -1,4 +1,4 @@
-/*global wc_rpg_params, wc_checkout_params */
+/*global wc_spg_params, wc_checkout_params */
 (function( $ ) {
 	"use strict";
 
@@ -27,7 +27,7 @@
 		{
 			const installmentParsed = "R$ " + parseFloat( installment.installmentAmount, 10 ).toFixed( 2 ).replace( ".", "," ).toString();
 			const totalParsed       = "R$ " + parseFloat( installment.totalAmount,       10 ).toFixed( 2 ).replace( ".", "," ).toString();
-			const interestFree      = ( installment.interestFree === true ) ? wc_rpg_params.interest_free : "";
+			const interestFree      = ( installment.interestFree === true ) ? wc_spg_params.interest_free : "";
 			const interestText      = interestFree ? interestFree : `(${totalParsed})`;
 
 			return `${installment.quantity}x ${installmentParsed} ${interestText}`;
@@ -170,26 +170,26 @@
 			// Validate the holder name.
 			if ( holder.length == 0 )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.invalid_holder}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.invalid_holder}</li>`;
 				error      = true;
 			}
 
 			// Validate the card brand.
 			if ( typeof brand === "undefined" || brand === "error" )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.invalid_card}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.invalid_card}</li>`;
 				error      = true;
 			}
 			else if ( brand === "unsupported" )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.unsupported_card}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.unsupported_card}</li>`;
 				error      = true;
 			}
 
 			// Validate the expiry date.
 			if ( expirationMonth.length !== 2 || expirationYear.length !== 4 )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.invalid_expiry}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.invalid_expiry}</li>`;
 				error      = true;
 			}
 			if ( ( expirationMonth.length === 2  && expirationYear.length === 4 ) &&
@@ -198,35 +198,35 @@
 				   expirationYear >= ( today.getFullYear() + 20 ) ||
 				   ( expirationMonth < ( today.getMonth() + 2 ) && expirationYear.toString() === today.getFullYear().toString() ) ) )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.expired_date}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.expired_date}</li>`;
 				error      = true;
 			}
 
 			// Validate the cvc.
 			if ( cvc.length == 0 )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.invalid_cvv}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.invalid_cvv}</li>`;
 				error      = true;
 			}
 
 			// Installments.
 			if ( installment === "0" )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.empty_installment}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.empty_installment}</li>`;
 				error      = true;
 			}
 
 			// Validate the cpf/cnpj.
 			if ( cpf.length == 0 && cnpj.length == 0)
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.invalid_h_cpf}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.invalid_h_cpf}</li>`;
 				error      = true;
 			}
 
 			// Validate the phone.
 			if ( phone.length == 0 )
 			{
-				errorHtml += `<li>${wc_rpg_params.messages.invalid_h_phone}</li>`;
+				errorHtml += `<li>${wc_spg_params.messages.invalid_h_phone}</li>`;
 				error      = true;
 			}
 
@@ -283,7 +283,7 @@
 			if ( bin.length >= 16 && bin.length <= 20 )
 			{
                 $.ajax( {
-                    url  : `${wc_rpg_params.base_url}/cards/brand`,
+                    url  : `${wc_spg_params.base_url}/cards/brand`,
                     type : "POST",
                     data : { bin },
                     success: function( data ) {
@@ -327,11 +327,11 @@
 		$( "body" ).on( "suprempay_credit_card_brand", function( e, brand ) {
             if ( brand === "unsupported" )
             {
-                supremPayAddErrorMessage( wc_rpg_params.messages.unsupported_card );
+                supremPayAddErrorMessage( wc_spg_params.messages.unsupported_card );
             }
             else if ( brand === "error" )
             {
-                supremPayAddErrorMessage( wc_rpg_params.messages.invalid_card );
+                supremPayAddErrorMessage( wc_spg_params.messages.invalid_card );
             }
 			else
 			{

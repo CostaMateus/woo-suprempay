@@ -765,7 +765,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 				wp_localize_script(
 					"suprempay-gateway-checkout",
-					"wc_rpg_params",
+					"wc_spg_params",
 					[
 						"user_id"  => $user->ID,
 						"base_url" => $url,
