@@ -600,7 +600,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		wp_enqueue_script( "wc_suprempay-gateway_admin", $url, [ "jquery" ], WC_SUPREMPAY_VERSION, true );
 
-		include dirname( WC_SUPREMPAY_PLUGIN_FILE ) . "/templates/admin/settings.php";
+		include dirname( WC_SUPREMPAY_PLUGIN_FILE ) . "/templates/admin/woo-settings.php";
 	}
 
 	/**
