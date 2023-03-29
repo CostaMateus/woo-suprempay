@@ -14,7 +14,7 @@ defined( "ABSPATH" ) || exit;
 class WC_SupremPay_Gateway extends WC_Payment_Gateway
 {
 	/**
-	 * Instance of this class.
+	 * Instance of this class
 	 *
 	 * @since 	1.0.0
 	 * @var 	object
@@ -22,7 +22,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected static $instance = null;
 
 	/**
-	 * Plugin domain.
+	 * Plugin domain
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -30,7 +30,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $domain;
 
 	/**
-	 * Gateway enviroment.
+	 * Gateway enviroment
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -38,7 +38,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $is_homol;
 
 	/**
-	 * Token user HOMOL.
+	 * Token user HOMOL
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -46,7 +46,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $token_user_hml;
 
 	/**
-	 * Token user PROD.
+	 * Token user PROD
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -54,7 +54,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $token_user;
 
 	/**
-	 * Token integration HOMOL.
+	 * Token integration HOMOL
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -62,7 +62,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $token_integr_hml;
 
 	/**
-	 * Token integration PROD.
+	 * Token integration PROD
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -70,7 +70,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $token_integr;
 
 	/**
-	 * PIX option.
+	 * PIX option
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -78,7 +78,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $pix;
 
 	/**
-	 * PIX due date.
+	 * PIX due date
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -86,7 +86,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $pix_due_date;
 
 	/**
-	 * PIX message.
+	 * PIX message
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -94,7 +94,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $pix_message;
 
 	/**
-	 * Ticket option.
+	 * Ticket option
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -102,7 +102,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $ticket;
 
 	/**
-	 * Ticket due date.
+	 * Ticket due date
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -110,7 +110,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $ticket_due_date;
 
 	/**
-	 * Ticket message.
+	 * Ticket message
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -118,7 +118,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $ticket_message;
 
 	/**
-	 * CC title.
+	 * CC title
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -126,7 +126,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $cc;
 
 	/**
-	 * CC type.
+	 * CC type
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -134,7 +134,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $cc_type;
 
 	/**
-	 * Installment.
+	 * Installment
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -142,7 +142,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $installment;
 
 	/**
-	 * Invoice prefix.
+	 * Invoice prefix
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -150,7 +150,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $invoice_prefix;
 
 	/**
-	 * Debug.
+	 * Debug
 	 *
 	 * @var 	string
 	 * @since 	1.0.0
@@ -165,7 +165,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $cc_hide_cpf_field;
 
 	/**
-	 * Route base.
+	 * Route base
 	 *
 	 * @var 	wc_get_logger|WC_Logger
 	 * @since 	1.0.0
@@ -173,7 +173,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $log;
 
 	/**
-	 * Route base.
+	 * Route base
 	 *
 	 * @var 	WC_SupremPay_API
 	 * @since 	1.0.0
@@ -181,7 +181,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $api;
 
 	/**
-	 * Constructor for the gateway.
+	 * Constructor for the gateway
 	 *
 	 * @since 	1.0.0
 	 */
@@ -235,7 +235,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Return an instance of this class.
+	 * Return an instance of this class
 	 *
 	 * @since 	1.0.0
 	 * @return 	object 	A single instance of this class.
@@ -325,7 +325,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Get token-user.
+	 * Get token-user
 	 *
 	 * @since 	1.0.0
 	 * @return 	string
@@ -336,7 +336,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Get token-integration.
+	 * Get token-integration
 	 *
 	 * @since 	1.0.0
 	 * @return 	string
@@ -344,6 +344,17 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	public function get_token_integration()
 	{
 		return ( $this->is_homol === "yes" ) ? $this->token_integr_hml : $this->token_integr;
+	}
+
+	/**
+	 * Get api
+	 *
+	 * @since 	1.0.0
+	 * @return 	WC_SupremPay_API
+	 */
+	public function get_api()
+	{
+		return $this->api;
 	}
 
 	/**
@@ -368,7 +379,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Initialise Gateway Settings Form Fields.
+	 * Initialise Gateway Settings Form Fields
 	 *
 	 * @since 	1.0.0
 	 * @return 	void
@@ -595,7 +606,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
     }
 
 	/**
-	 * Returns a bool that indicates if currency is amongst the supported ones.
+	 * Returns a bool that indicates if currency is amongst the supported ones
 	 *
 	 * @since 	1.0.0
 	 * @return 	bool
@@ -606,7 +617,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Admin page.
+	 * Admin page
 	 *
 	 * @since 	1.0.0
 	 * @return 	void
@@ -617,7 +628,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Payment fields.
+	 * Payment fields
 	 *
 	 * @since 	1.0.0
 	 * @return 	void
@@ -652,7 +663,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Checkout scripts.
+	 * Checkout scripts
 	 *
 	 * @since 	1.0.0
 	 * @return 	void
@@ -912,7 +923,22 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Thank You page message.
+	 *
+	 * @since 	1.0.0
+	 * @param 	array $data
+	 * @return 	array
+	 */
+	public function process_data_transfer( $data )
+	{
+		return [
+			"email" => $data[ "email" ],
+			"pin"   => $data[ "pin"   ],
+			"value" => $data[ "value" ],
+		];
+	}
+
+	/**
+	 * Thank You page message
 	 *
 	 * @since 	1.0.0
 	 * @param 	int 	$order_id
@@ -934,7 +960,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Order Page message.
+	 * Order Page message
 	 *
 	 * @since 	1.0.0
 	 * @param 	object 	$order
@@ -954,7 +980,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Render Pix code on thnak_you page.
+	 * Render Pix code on thnak_you page
 	 *
 	 * @since 	1.0.0
 	 * @param 	string 	$code
@@ -1016,7 +1042,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Add content to the WC emails.
+	 * Add content to the WC emails
 	 *
 	 * @since 	1.0.0
 	 * @return 	void
@@ -1043,7 +1069,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Get log.
+	 * Get log
 	 *
 	 * @since 	1.0.0
 	 * @return 	string
