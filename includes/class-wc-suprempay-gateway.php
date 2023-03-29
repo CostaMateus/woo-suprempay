@@ -14,6 +14,14 @@ defined( "ABSPATH" ) || exit;
 class WC_SupremPay_Gateway extends WC_Payment_Gateway
 {
 	/**
+	 * Instance of this class.
+	 *
+	 * @since 	1.0.0
+	 * @var 	object
+	 */
+	protected static $instance = null;
+
+	/**
 	 * Plugin domain.
 	 *
 	 * @var 	string
@@ -224,6 +232,19 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		// Main actions and Transparent checkout actions.
         $this->init_actions();
+	}
+
+	/**
+	 * Return an instance of this class.
+	 *
+	 * @since 	1.0.0
+	 * @return 	object 	A single instance of this class.
+	 */
+	public static function init()
+    {
+		// If the single instance hasn't been set, set it now.
+		if ( null === self::$instance ) self::$instance = new self;
+		return self::$instance;
 	}
 
 	/**
@@ -592,14 +613,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 */
 	public function admin_options()
 	{
-		$suffix = defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
-		$path   = "assets/js/admin/admin{$suffix}.js";
-
-		$dir    = plugin_dir_path( __FILE__ );
-		$url    = plugins_url( $path, $dir );
-
-		wp_enqueue_script( "wc_suprempay-gateway_admin", $url, [ "jquery" ], WC_SUPREMPAY_VERSION, true );
-
 		include dirname( WC_SUPREMPAY_PLUGIN_FILE ) . "/templates/admin/woo-settings.php";
 	}
 
@@ -650,8 +663,8 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		{
 			if ( ! get_query_var( "order-received" ) )
 			{
-				// $suffix = defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
-				$suffix = "";
+				$suffix = ""; // defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
+
 				wp_enqueue_style(  "suprempay-gateway-checkout", plugins_url( "assets/css/frontend/sp-checkout{$suffix}.css", plugin_dir_path( __FILE__ ) ), [], WC_SUPREMPAY_VERSION );
 				wp_enqueue_script( "suprempay-gateway-checkout", plugins_url( "assets/js/frontend/sp-checkout{$suffix}.js",   plugin_dir_path( __FILE__ ) ), [ "json2", "jquery", "woocommerce-extra-checkout-fields-for-brazil-front", "jquery-mask" ], WC_SUPREMPAY_VERSION, true );
 
