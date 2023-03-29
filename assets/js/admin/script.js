@@ -211,8 +211,9 @@
 								nonce.val( "" );
 							break;
 
-							case 401:
-								$( "#sp-notice-error"   ).removeClass( "sp-d-none" ).find( "p" ).html( p + "Ocorreu um erro!" );
+							case 400:
+							case 404:
+								$( "#sp-notice-error"   ).removeClass( "sp-d-none" ).find( "p" ).html( p + result.message );
 							break;
 
 							default:
