@@ -729,8 +729,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		$data     = [];
 
 		// if ( $method == "cc"     ) $data = $this->process_data_cc( $order );
-		if ( $method == "pix"    ) $data = $this->process_data_pix( $order );
-		if ( $method == "ticket" ) $data = $this->process_data_ticket( $order );
+		if ( $method == "pix"      ) $data = $this->process_data_pix( $order );
+		if ( $method == "ticket"   ) $data = $this->process_data_ticket( $order );
+		if ( $method == "transfer" ) $data = $this->process_data_transfer( $order );
 
 		$response = $this->api->do_payment( $method, $data );
 
@@ -923,18 +924,29 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
+	 * Processes order and checkout data for payment via internal transfer
 	 *
 	 * @since 	1.0.0
-	 * @param 	array $data
+	 * @param 	object 	$order
 	 * @return 	array
 	 */
-	public function process_data_transfer( $data )
+	public function process_data_transfer( $order )
 	{
-		return [
-			"email" => $data[ "email" ],
-			"pin"   => $data[ "pin"   ],
-			"value" => $data[ "value" ],
+		$code      = WC()->checkout()->get_value( "suprempay_auth_code" );
+		$email     = WC()->checkout()->get_value( "billing_email"       );
+		$firstName = WC()->checkout()->get_value( "billing_first_name"  );
+		$lastName  = WC()->checkout()->get_value( "billing_last_name"   );
+		$name      = "{$firstName} {$lastName}";
+
+		$data      = [
+			"order"  => $order,
+			"amount" => $order->get_total(),
+			"name"   => $name,
+			"email"  => $email,
+			"code"   => $code,
 		];
+
+		return $data;
 	}
 
 	/**
