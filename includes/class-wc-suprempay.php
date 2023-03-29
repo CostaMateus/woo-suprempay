@@ -290,14 +290,34 @@ class WC_SupremPay
 			die();
 		}
 
-		// $gateway       = WC_SupremPay_Gateway::init();
+		$gateway  = WC_SupremPay_Gateway::init();
+		$data     = $gateway->process_data_transfer( $_POST );
+		$api      = $gateway->get_api();
 
-		echo json_encode( [
-			"code"    => 200,
-			"message" => "ok",
-			"data"    => $_POST
-		] );
+		$response = $api->do_payment( "transfer", $data );
+
+		if ( !$response[ "success" ] )
+		{
+			if ( $response[ "message" ] == "Sorry, we couldn't find this user!" )
+			{
+				$response[ "message" ] = "Carteira não encontrada";
+				$response[ "code"    ] = 404;
+			}
+			else
+			{
+				$response[ "code"    ] = 400;
+			}
+		}
+		else
+		{
+			$response[ "code" ] = 200;
+		}
+
+		$response = json_encode( $response );
+
+		$api->log( $response );
+
+		echo $response;
 		die();
-
 	}
 }
