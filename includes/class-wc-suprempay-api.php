@@ -259,6 +259,10 @@ class WC_SupremPay_API
 			case "ticket":
 				return $this->do_payment_ticket( $data );
 			break;
+
+			case "transfer":
+				return $this->do_transfer_between_users( $data );
+			break;
 		}
 	}
 
@@ -540,6 +544,50 @@ class WC_SupremPay_API
 	}
 
 	/**
+	 * Process transfer payment
+	 *
+	 * @since 	1.0.0
+	 * @param 	array 	$data 	Data of the payment
+	 * @return 	array
+	 */
+	private function do_transfer_between_users( $data )
+	{
+		$check  = $this->check_wallet( $data[ "email" ] );
+
+		if ( !$check[ "success" ] ) return $check;
+
+		$value  = $data[ "value" ];
+		$value  = str_replace( "R$ ", "", $value );
+		$value  = str_replace( ".",   "", $value );
+
+		$params = [
+			"token_api" => $this->gateway->get_token_user(),
+			"wallet"    => $data[ "email" ],
+			"pin"       => $data[ "pin"   ],
+			"value"     => $value,
+		];
+
+		return $this->exec( "finance/transfer/user/between/set", "POST", [], $params );
+	}
+
+	/**
+	 * Check if the $email is a wallet
+	 *
+	 * @since 	1.0.0
+	 * @param 	string 	$email
+	 * @return 	array
+	 */
+	private function check_wallet( $email )
+	{
+		$params = [
+			"token_api" => $this->gateway->get_token_user(),
+			"wallet"    => $email,
+		];
+
+		return $this->exec( "user/get/info/wallet", "POST", [], $params );
+	}
+
+	/**
 	 * Register webhooks
 	 *
 	 * @since 	1.0.0
@@ -598,7 +646,7 @@ class WC_SupremPay_API
 	 * @param 	boolean 	$is_error
 	 * @return 	void
 	 */
-	private function log( $message, $is_error = false )
+	public function log( $message, $is_error = false )
 	{
 		$log = $this->gateway->get_log();
 
