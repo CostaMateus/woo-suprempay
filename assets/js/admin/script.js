@@ -151,6 +151,87 @@
 		// $( "body" ).on( "change", "#woocommerce_suprempay_ticket", function () {
 		// 	suprempaySwitchDueDate( $( this ).is( ":checked" ), "ticket" );
 		// });
+
+
+		window.addEventListener( "load", function() {
+			$( "#sp_tbu_value" ).maskMoney( {
+				prefix: "R$ ",
+				decimal: ",",
+				thousands: ".",
+				precision: 2,
+				allowZero: false,
+				allowNegative: false,
+			} );
+
+			$( "#suprempay-tbu" ).on( "submit", function( e ) {
+				e.preventDefault();
+
+				const p = "<b>SupremPay</b>: ";
+
+				$( "#sp-tbu-btn" ).prop( "disabled", "disabled" ).find( "div" ).removeClass( "sp-d-none" );
+
+				$( "#sp-notice-success" ).addClass( "sp-d-none" ).find( "p" ).html( "" );
+				$( "#sp-notice-warning" ).addClass( "sp-d-none" ).find( "p" ).html( "" );
+				$( "#sp-notice-error"   ).addClass( "sp-d-none" ).find( "p" ).html( "" );
+
+				let url   = spas.ajaxurl;
+				let email = $( "#sp_tbu_email" );
+				let pinCd = $( "#sp_tbu_pin"   );
+				let value = $( "#sp_tbu_value" );
+				let nonce = $( "#sp_tbu_nonce" );
+
+				if ( !email.val() || !pinCd.val() || !value.val() || !nonce.val() )
+				{
+					$( "#sp-notice-warning" ).removeClass( "sp-d-none" ).find( "p" ).html( p + "Todos os campos devem ser preenchidos!" );
+					return;
+				}
+
+				$.ajax( {
+					url,
+					type : "POST",
+					data : {
+						action : "suprempay_tbu",
+						email  : email.val(),
+						pin    : pinCd.val(),
+						value  : value.val(),
+						nonce  : nonce.val(),
+					},
+					success: function( data ) {
+						console.log( data );
+
+						let result = JSON.parse( data );
+						console.log( result );
+
+						switch ( result.code ) {
+							case 200:
+								$( "#sp-notice-success" ).removeClass( "sp-d-none" ).find( "p" ).html( p + "Transferência realizada com sucesso!" );
+								email.val( "" );
+								pinCd.val( "" );
+								value.val( "" );
+								nonce.val( "" );
+							break;
+
+							case 401:
+								$( "#sp-notice-error"   ).removeClass( "sp-d-none" ).find( "p" ).html( p + "Ocorreu um erro!" );
+							break;
+
+							default:
+								$( "#sp-notice-warning" ).removeClass( "sp-d-none" ).find( "p" ).html( p + "Algo deu errado!" );
+							break;
+						}
+
+						jQuery( "#sp-tbu-btn" ).prop( "disabled", null ).find( "div" ).addClass( "sp-d-none" );
+					},
+					error: function( err ) {
+						console.log( err );
+
+						$( "#sp-notice-error" ).removeClass( "sp-d-none" ).find( "p" ).html( p + "Ocorreu um erro!" );
+						jQuery( "#sp-tbu-btn" ).prop( "disabled", null ).find( "div" ).addClass( "sp-d-none" );
+					}
+				} );
+			} );
+
+		} );
 	} );
 
 }( jQuery ) );
