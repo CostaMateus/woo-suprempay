@@ -44,6 +44,12 @@ class WC_SupremPay
 				add_filter( "woocommerce_shipping_fields",            [ $this, "checkout_shipping_fields"     ], 9999 );
 
 				add_filter( "plugin_action_links_" . plugin_basename( WC_SUPREMPAY_PLUGIN_FILE ), [ $this, "plugin_action_links" ] );
+
+				add_action( "admin_menu",                   [ $this, "add_admin_menu"         ], 9 );
+				add_action( "admin_head",                   [ $this, "admin_css_js"           ]    );
+
+				add_action( "wp_ajax_suprempay_tbu",        [ $this, "transfer_between_users" ]    );
+				add_action( "wp_ajax_nopriv_suprempay_tbu", [ $this, "transfer_between_users" ]    );
 			}
 			else
 			{
@@ -183,5 +189,115 @@ class WC_SupremPay
 	public function woocommerce_missing_notice()
     {
 		include dirname( __FILE__ ) . "/admin/views/html-notice-missing-woocommerce.php";
+	}
+
+	/**
+	 * Add submenu on WP Settings menu
+	 *
+	 * @since 	1.0.0
+	 * @return 	void
+	 */
+	public function add_admin_menu()
+	{
+		add_menu_page(
+			"SupremPay",
+			"SupremPay",
+			"manage_options",
+			WC_SUPREMPAY_DOMAIN,
+			[ $this, "admin_menu_settings" ],
+			plugins_url( "assets/images/suprempay-white-icon-20.png", WC_SUPREMPAY_PLUGIN_FILE ),
+            65
+		);
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @since 	1.0.0
+	 * @return 	void
+	 */
+	public function admin_menu_settings()
+	{
+		if ( !current_user_can( "manage_options" ) ) wp_die( __( "Você não tem permissões suficientes para acessar esta página." ) );
+
+		if ( isset( $_GET[ "error_message" ] ) )
+		{
+			add_action( "admin_notices", [ $this, "settings_messages" ] );
+			do_action( "admin_notices", $_GET[ "error_message" ] );
+		}
+
+		require_once ( plugin_dir_path( dirname( __FILE__ ) ) . "templates/admin/admin-settings.php" );
+	}
+
+	/**
+	 * Handles errors and displays messages accordingly
+	 *
+	 * @since 	1.0.0
+	 * @param 	string $error_message
+	 */
+	public function settings_messages( $error_message )
+	{
+		switch ( $error_message )
+		{
+			case "1":
+				$message       = __( "There was an error adding this setting. Please try again. If this persists, shoot us an email.", WC_SUPREMPAY_DOMAIN );
+				$err_code      = esc_attr(  "triibo_api_services-example-setting" );
+				$setting_field = "triibo_api_services_example_setting";
+			break;
+		}
+
+		$type = "error";
+
+		add_settings_error( $setting_field, $err_code, $message, $type );
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @since 	1.0.0
+	 * @return 	void
+	 */
+	public function admin_css_js()
+	{
+		$suffix   = ""; // defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
+
+		$css_path = "assets/css/admin/style{$suffix}.css";
+		$js_path  = "assets/js/admin/script{$suffix}.js";
+		$mk_path  = "assets/js/admin/jquery.maskMoney.min.js";
+
+		$css_ver  = date( "ymd-His", filemtime( plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . $css_path ) );
+		$js_ver   = date( "ymd-His", filemtime( plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . $js_path  ) );
+		$mk_ver   = date( "ymd-His", filemtime( plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . $mk_path  ) );
+
+		wp_enqueue_style( "sp_admin_css", plugins_url( $css_path, WC_SUPREMPAY_PLUGIN_FILE ), false, $css_ver, "all" );
+		wp_enqueue_script( "jquery-maskMoney", plugins_url( $mk_path, WC_SUPREMPAY_PLUGIN_FILE ), [ "jquery" ], $mk_ver, true );
+		wp_enqueue_script( "sp_admin_script", plugins_url( $js_path, WC_SUPREMPAY_PLUGIN_FILE ), [ "jquery", "jquery-maskMoney" ], $js_ver, true );
+
+		wp_localize_script( "sp_admin_script", "spas", [
+			"id"      => WC_SUPREMPAY_ID,
+			"ajaxurl" => admin_url( "admin-ajax.php" ),
+		] );
+	}
+
+	public function transfer_between_users()
+	{
+		if ( !isset( $_POST[ "nonce" ] ) || !wp_verify_nonce( $_POST[ "nonce" ], "sp_tbu_nonce" ) )
+		{
+			echo json_encode( [
+				"code"    => 401,
+				"message" => "Unauthorized",
+			] );
+			die();
+		}
+
+		// $gateway       = WC_SupremPay_Gateway::init();
+
+		echo json_encode( [
+			"code"    => 200,
+			"message" => "ok",
+			"data"    => $_POST
+		] );
+		die();
+
 	}
 }
