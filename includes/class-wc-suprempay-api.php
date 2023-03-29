@@ -261,7 +261,7 @@ class WC_SupremPay_API
 			break;
 
 			case "transfer":
-				return $this->do_transfer_between_users( $data );
+				return $this->do_internal_transfer( $data );
 			break;
 		}
 	}
@@ -550,21 +550,29 @@ class WC_SupremPay_API
 	 * @param 	array 	$data 	Data of the payment
 	 * @return 	array
 	 */
-	private function do_transfer_between_users( $data )
+	private function do_internal_transfer( $data )
 	{
-		$check  = $this->check_wallet( $data[ "email" ] );
+		$check    = $this->check_wallet( $data[ "email" ] );
 
-		if ( !$check[ "success" ] ) return $check;
+		if ( !$check[ "success" ] || ( isset( $check[ "data" ] ) && !$check[ "data" ][ "success" ] ) )
+			return $check;
 
-		$value  = $data[ "value" ];
-		$value  = str_replace( "R$ ", "", $value );
-		$value  = str_replace( ".",   "", $value );
+		$order    = $data[ "order" ];
+		$email    = $data[ "email" ];
+		$code     = $data[ "code"  ];
 
-		$params = [
-			"token_api" => $this->gateway->get_token_user(),
-			"wallet"    => $data[ "email" ],
-			"pin"       => $data[ "pin"   ],
-			"value"     => $value,
+		$prefix   = $this->gateway->get_invoice_prefix();
+		$descrip  = "#{$prefix}{$order->get_id()} | {$data["name"]}";
+
+		$amount   = number_format( $data[ "amount" ], 2, ",", "" );
+
+		$params   = [
+			"token_api"            => $this->gateway->get_token_user(),
+
+			"email"                => $email,
+			"description"          => $descrip,
+			"google_authenticator" => $code,
+			"value"                => $amount,
 		];
 
 		return $this->exec( "finance/transfer/user/between/set", "POST", [], $params );
