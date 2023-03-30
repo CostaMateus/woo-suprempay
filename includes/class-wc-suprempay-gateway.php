@@ -770,22 +770,24 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		if ( !$response[ "success" ] )
 		{
-			wc_add_notice( $response[ "message" ], "error" );
+			$message = "SupremPay: " . $response[ "message" ];
+			wc_add_notice( $message, "error" );
 
-			return array(
+			return [
 				"result"   => "fail",
 				"redirect" => ""
-			);
+			];
 		}
 
 		if ( !$response[ "data" ][ "success" ] )
 		{
-			wc_add_notice( $response[ "data" ][ "message" ], "error" );
+			$message = "SupremPay: " . $response[ "data" ][ "message" ];
+			wc_add_notice( $message, "error" );
 
-			return array(
+			return [
 				"result"   => "fail",
 				"redirect" => ""
-			);
+			];
 		}
 
 		// if ( $method == "cc"     && isset( $response[ "data" ][ "capture"   ] ) && $response[ "data" ][ "capture" ] == "CAPTURADO" )
@@ -816,6 +818,11 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 			$order->update_meta_data( "_suprempay_code", $data );
 			$order->update_status( "on-hold", __( "SupremPay: Aguardando pagamento", $this->domain ) );
+		}
+
+		if ( $method == "transfer" && isset( $response[ "data" ] ) )
+		{
+			// não sei qual a possível resposta
 		}
 
 		$order->save();
