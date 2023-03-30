@@ -54,12 +54,12 @@
 		 *
 		 * @param {string} error
 		 */
-		// function supremPayAddErrorMessage( error )
-		// {
-		// 	let wrapper = $( "#suprempay-cc-form" );
-		// 	$( ".woocommerce-error", wrapper ).remove();
-		// 	wrapper.prepend( `<div class="woocommerce-error" style="margin-bottom: 0.5em !important;">${error}</div>` );
-		// }
+		function supremPayAddErrorMessage( error, id )
+		{
+			let wrapper = $( `#${id}` );
+			$( ".woocommerce-error", wrapper ).remove();
+			wrapper.prepend( `<div class="woocommerce-error" style="margin-bottom: 0.5em !important;">${error}</div>` );
+		}
 
 		/**
 		 * Hide payment methods if have only one.
@@ -141,7 +141,43 @@
 				return true;
 			}
 
-			if ( !$( "#payment_method_suprempay"    ).is( ":checked" ) ) return true;
+			if ( !$( "#payment_method_suprempay" ).is( ":checked" ) ) return true;
+
+			if ( $( "#suprempay-payment-method-transfer" ).is( ":checked" ) )
+			{
+				let form      = $( "form.checkout, form #order_review" );
+
+				let code      = $( "#suprempay-auth-code-field" ).val();
+				let error     = false;
+				let errorHtml = "<ul>";
+
+				if ( code.length != 6 )
+				{
+					errorHtml += `<li>${wc_spg_params.messages.invalid_2auth_number}</li>`;
+					error      = true;
+				}
+
+				if ( isNaN( code ) )
+				{
+					errorHtml += `<li>${wc_spg_params.messages.invalid_2auth}</li>`;
+					error      = true;
+				}
+
+				errorHtml += "</ul>";
+
+				if ( error )
+				{
+					supremPayAddErrorMessage( errorHtml, "suprempay-transfer-form" );
+				}
+				else
+				{
+					// Submit the form.
+					suprempay_submit = true;
+					form.submit();
+				}
+
+				return false;
+			}
 
 			if ( !$( "#suprempay-payment-method-cc" ).is( ":checked" ) ) return true;
 
@@ -342,7 +378,7 @@
 		// } );
 
 		// Process the credit card data when submit the checkout form.
-		$( "form.checkout" ).on( "checkout_place_order_suprempay", function() {
+		$( "form.checkout" ).on( "checkout_place_order", function() {
 			return supremPayformHandler();
 		});
 
