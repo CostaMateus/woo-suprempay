@@ -575,7 +575,7 @@ class WC_SupremPay_API
 			"value"                => $amount,
 		];
 
-		return $this->exec( "finance/transfer/user/between/set", "POST", [], $params );
+		return $this->exec( "finance/internal/transfer", "POST", [], $params );
 	}
 
 	/**
