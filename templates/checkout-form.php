@@ -233,9 +233,9 @@ defined( "ABSPATH" ) || exit;
 					<?php _e( "Código de segurança", WC_SUPREMPAY_DOMAIN ); ?> <span class="required" >*</span>
 				</label>
 				<input id="suprempay-auth-code-field" class="input-text wc-transfer-auth-code"
-					name="suprempay_auth_code" type="tel" autocomplete="off"
-					placeholder="<?php _e( "Autenticação de dois fatores", WC_SUPREMPAY_DOMAIN ); ?>"
-					style="font-size:1.5em; padding:8px; height:50px;" />
+					name="suprempay_auth_code" maxlenght="6" pattern="[0-9]{6}" title="O código tem seis (6) números"
+					type="tel" autocomplete="off" style="font-size:1.5em; padding:8px; height:50px;"
+					placeholder="<?php _e( "Autenticação de 2 fatores", WC_SUPREMPAY_DOMAIN ); ?>" />
 			</p>
 			<div class="clear" ></div>
 		</div>
