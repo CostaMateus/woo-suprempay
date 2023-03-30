@@ -118,6 +118,14 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	protected $ticket_message;
 
 	/**
+	 * Transfer option
+	 *
+	 * @var 	string
+	 * @since 	1.0.0
+	 */
+	protected $transfer;
+
+	/**
 	 * CC title
 	 *
 	 * @var 	string
@@ -211,11 +219,12 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
         $this->token_integr_hml = $this->get_option( "token_integr_hml"     );
         $this->token_integr     = $this->get_option( "token_integr"         );
 
-		// Pix and ticket configs
+		// Pix / ticket / transfer configs
 		$this->pix              = $this->get_option( "pix"                  );
 		$this->pix_due_date     = $this->get_option( "pix_due_date", "15"   );
 		$this->ticket           = $this->get_option( "ticket"               );
 		$this->ticket_due_date  = $this->get_option( "ticket_due_date", "2" );
+		$this->transfer         = $this->get_option( "transfer"             );
 
 		// Pix and ticket messages
 		$this->pix_message      = $this->get_option( "pix_message",    "Utilize o seu aplicativo favorito do Pix para ler o QRCode ou copiar o código abaixo e efetuar o pagamento."    );
@@ -526,6 +535,20 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				// "desc_tip"    => true,
 			],
 
+			// transferencia bancaria supremcash
+			"transfer_title"   => [
+				"title"       => __( "Transferência SupremCash",                $this->domain ),
+				"type"        => "title",
+				"description" => "",
+			],
+			"transfer"         => [
+				"type"    => "checkbox",
+                "title"   => __( "Pagamento por transferência
+								  entre contas SupremCash",                     $this->domain ),
+				"label"   => __( "Ativar transferência SupremCash no checkout", $this->domain ),
+				"default" => "yes",
+            ],
+
 			// // card
 			// "cc_title"        => [ "type" => "title" ],
 			// "cc"              => [
@@ -652,10 +675,13 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				// "installment" => $this->installment ?? "10",
 				"pix"         => $this->pix         ?? "no",
 				"ticket"      => $this->ticket      ?? "no",
+				"transfer"    => $this->transfer    ?? "no",
+
 				"flag"        => plugins_url( "assets/images/brazilian-flag.png", plugin_dir_path( __FILE__ ) ),
 				// "icon_cc"     => plugins_url( "assets/images/icon-cc.png",        plugin_dir_path( __FILE__ ) ),
-				"icon_pix"    => plugins_url( "assets/images/icon-pix.png",       plugin_dir_path( __FILE__ ) ),
-				"icon_ticket" => plugins_url( "assets/images/icon-ticket.png",    plugin_dir_path( __FILE__ ) ),
+				"icon_pix"      => plugins_url( "assets/images/icon-pix.png",       plugin_dir_path( __FILE__ ) ),
+				"icon_ticket"   => plugins_url( "assets/images/icon-ticket.png",    plugin_dir_path( __FILE__ ) ),
+				"icon_transfer" => plugins_url( "assets/images/icon-transfer.png",  plugin_dir_path( __FILE__ ) ),
 			],
 			"",
 			WC_SupremPay::get_templates_path()
