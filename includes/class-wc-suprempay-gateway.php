@@ -700,13 +700,18 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		{
 			if ( ! get_query_var( "order-received" ) )
 			{
-				$suffix = ""; // defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
+				$suffix   = ""; // defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
 
-				wp_enqueue_style(  "suprempay-gateway-checkout", plugins_url( "assets/css/frontend/sp-checkout{$suffix}.css", plugin_dir_path( __FILE__ ) ), [], WC_SUPREMPAY_VERSION );
-				wp_enqueue_script( "suprempay-gateway-checkout", plugins_url( "assets/js/frontend/sp-checkout{$suffix}.js",   plugin_dir_path( __FILE__ ) ), [ "json2", "jquery", "woocommerce-extra-checkout-fields-for-brazil-front", "jquery-mask" ], WC_SUPREMPAY_VERSION, true );
+				$css_path = "assets/css/frontend/sp-checkout{$suffix}.css";
+				$css_ver  = date( "ymdHis", filemtime( plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . $css_path ) );
+				wp_enqueue_style( "suprempay-gateway-checkout",  plugins_url( $css_path, WC_SUPREMPAY_PLUGIN_FILE ), false, $css_ver, "all" );
 
-				$user = wp_get_current_user();
-				$url  = get_rest_url( null, "suprempay/v1" );
+				$js_path  = "assets/js/frontend/sp-checkout{$suffix}.js";
+				$js_ver   = date( "ymdHis", filemtime( plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . $js_path  ) );
+				wp_enqueue_script( "suprempay-gateway-checkout", plugins_url( $js_path,  WC_SUPREMPAY_PLUGIN_FILE ), [ "json2", "jquery", "woocommerce-extra-checkout-fields-for-brazil-front", "jquery-mask" ], $js_ver, true );
+
+				$user     = wp_get_current_user();
+				$url      = get_rest_url( null, "suprempay/v1" );
 
 				wp_localize_script(
 					"suprempay-gateway-checkout",
@@ -715,7 +720,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 						"user_id"  => $user->ID,
 						"base_url" => $url,
 						"messages" => [
-							"session_error"      => __( "Ocorreu um error. Por favor, atualize a página.",                         $this->domain ),
+							"session_error"        => __( "Ocorreu um error. Por favor, atualize a página.",                         $this->domain ),
+							"invalid_2auth"        => __( "O código de segurança é inválido.",                                       $this->domain ),
+							"invalid_2auth_number" => __( "O código é composto por 6 dígitos.",                                      $this->domain ),
 
 							// "invalid_card"       => __( "O número do cartão de crédito é inválido.",                               $this->domain ),
 							// "invalid_expiry"     => __( "A data de expiração é inválida, por favor, utilize o formato MM / AAAA.", $this->domain ),
