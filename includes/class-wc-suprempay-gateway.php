@@ -219,6 +219,11 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
         $this->token_integr_hml = $this->get_option( "token_integr_hml"     );
         $this->token_integr     = $this->get_option( "token_integr"         );
 
+		// Card
+        $this->cc               = $this->get_option( "cc"                   );
+        $this->cc_type          = $this->get_option( "cc_type", "avista"    );
+        $this->installment      = $this->get_option( "installment", "1"     );
+
 		// Pix / ticket / transfer configs
 		$this->pix              = $this->get_option( "pix"                  );
 		$this->pix_due_date     = $this->get_option( "pix_due_date", "15"   );
@@ -467,6 +472,44 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				"default"     => "",
 			],
 
+			// card
+			"cc_title"         => [
+				"title"       => __( "Cartão de crédito",                                                 $this->domain ),
+				"type"        => "title",
+				"description" => "",
+			],
+			"cc"               => [
+				"type"    => "checkbox",
+				"title"   => __( "Cartão de Crédito",                                                     $this->domain ),
+				"label"   => __( "Ativar cartão de crédito no checkout",                                  $this->domain ),
+				"default" => "yes",
+            ],
+			"cc_type"          => [
+				"type"        => "select",
+				"title"       => __( "Tipo de pagamento",                                                 $this->domain ),
+				"description" => __( "Selecione \"parcelado\" para oferecer a opção de
+									  parcelamento sem juros no cartão de crédito para o cliente.",       $this->domain ),
+				"desc_tip"    => true,
+				"default"     => "avista",
+				"class"       => "wc-enhanced-select",
+				"options"     => [
+					"avista"    => __(  "À vista",                                                        $this->domain ),
+					"parcelado" => __(  "Parcelado",                                                      $this->domain ),
+				],
+            ],
+			"installment"      => [
+				"type"        => "number",
+				"title"       => __( "Número de parcelas",                                                $this->domain ),
+				"description" => __( "Selecione o número máximo de parcelas disponíveis para o cliente.", $this->domain ),
+				"desc_tip"    => true,
+				"default"     => 1,
+				"custom_attributes" => [
+					"maxlength"   => 2,
+					"min"         => 1,
+					"max"         => 12,
+				],
+            ],
+
 			// pix
 			"pix_title"        => [
 				"title"       => __( "PIX",                                     $this->domain ),
@@ -549,45 +592,6 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				"default" => "yes",
             ],
 
-			// // card
-			// "cc_title"        => [ "type" => "title" ],
-			// "cc"              => [
-			// 	"type"    => "checkbox",
-			// 	"title"   => __( "Cartão de Crédito",                                                         $this->domain ),
-			// 	"label"   => __( "Ativar cartão de crédito no checkout",                                      $this->domain ),
-			// 	"default" => "yes",
-            // ],
-			// "cc_type"         => [
-			// 	"type"        => "select",
-			// 	"title"       => __( "Tipo de pagamento",                                                   $this->domain ),
-			// 	"description" => __( "Selecione \"parcelado\" para oferecer a opção de
-			// 						  parcelamento sem juros no cartão de crédito para o cliente.",         $this->domain ),
-			// 	"desc_tip"    => true,
-			// 	"default"     => "avista",
-			// 	"class"       => "wc-enhanced-select",
-			// 	"options"     => [
-			// 		"avista"  => __(  "À vista",                                                            $this->domain ),
-			// 		// opção fixa, v1.0.0
-			// 		"lojista" => __(  "Parcelado",                                                          $this->domain ),
-
-			// 		// opções desativadas devido a taxação não estar no backend da SupremPay
-			// 		// "lojista" => __(  "Parcelado s/ juros",                                                 $this->domain ),
-			// 		// "emissor" => __(  "Parcelado c/ juros",                                                 $this->domain ),
-			// 	],
-            // ],
-			// "installment"     => [
-			// 	"type"        => "number",
-			// 	"title"       => __( "Número de parcelas",                                                  $this->domain ),
-			// 	"description" => __( "Selecione o número máximo de parcelas disponíveis para o cliente.",   $this->domain ),
-			// 	"desc_tip"    => true,
-			// 	"default"     => 1,
-			// 	"custom_attributes" => [
-			// 		"maxlength"   => 2,
-			// 		"min"         => 1,
-			// 		"max"         => 99,
-			// 	],
-            // ],
-
 			"behavior"        => [
 				"title"       => __( "Comportamento da integração",             $this->domain ),
 				"type"        => "title",
@@ -597,7 +601,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				"type"        => "text",
 				"title"       => __( "Prefixo do pedido",                        $this->domain ),
 				"description" => __( "Por favor informe um prefixo para utilizar
-									  com os números de pedidos.",               $this->domain ), // Caso você utilize sua conta do SupremPay em mais de uma loja, procure utilizar um prefixo único para cada loja
+									  com os números de pedidos.",               $this->domain ),
 				"desc_tip"    => true,
 				"default"     => "WC-",
             ],
@@ -669,16 +673,16 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		wc_get_template(
 			"checkout-form.php",
 			[
-				"cart_total"  => $this->get_order_total(),
-				"cc"          => $this->cc          ?? "no",
-				// "cc_type"     => $this->cc_type     ?? "avista",
-				// "installment" => $this->installment ?? "10",
-				"pix"         => $this->pix         ?? "no",
-				"ticket"      => $this->ticket      ?? "no",
-				"transfer"    => $this->transfer    ?? "no",
+				"cart_total"    => $this->get_order_total(),
+				"cc"            => $this->cc          ?? "no",
+				"cc_type"       => $this->cc_type     ?? "avista",
+				"installment"   => $this->installment ?? "1",
+				"pix"           => $this->pix         ?? "no",
+				"ticket"        => $this->ticket      ?? "no",
+				"transfer"      => $this->transfer    ?? "no",
 
-				"flag"        => plugins_url( "assets/images/brazilian-flag.png", plugin_dir_path( __FILE__ ) ),
-				// "icon_cc"     => plugins_url( "assets/images/icon-cc.png",        plugin_dir_path( __FILE__ ) ),
+				"flag"          => plugins_url( "assets/images/brazilian-flag.png", plugin_dir_path( __FILE__ ) ),
+				"icon_cc"       => plugins_url( "assets/images/icon-cc.png",        plugin_dir_path( __FILE__ ) ),
 				"icon_pix"      => plugins_url( "assets/images/icon-pix.png",       plugin_dir_path( __FILE__ ) ),
 				"icon_ticket"   => plugins_url( "assets/images/icon-ticket.png",    plugin_dir_path( __FILE__ ) ),
 				"icon_transfer" => plugins_url( "assets/images/icon-transfer.png",  plugin_dir_path( __FILE__ ) ),
@@ -720,24 +724,22 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 						"user_id"  => $user->ID,
 						"base_url" => $url,
 						"messages" => [
-							"session_error"        => __( "Ocorreu um error. Por favor, atualize a página.",                         $this->domain ),
-							"invalid_2auth"        => __( "O código de segurança é inválido.",                                       $this->domain ),
-							"invalid_2auth_number" => __( "O código é composto por 6 dígitos.",                                      $this->domain ),
+							"session_error"      => __( "Ocorreu um error. Por favor, atualize a página.",                         $this->domain ),
 
-							// "invalid_card"       => __( "O número do cartão de crédito é inválido.",                               $this->domain ),
-							// "invalid_expiry"     => __( "A data de expiração é inválida, por favor, utilize o formato MM / AAAA.", $this->domain ),
-							// "invalid_cvv"        => __( "O código do cartão é inválido.",                                          $this->domain ),
-							//
-							// "invalid_holder"     => __( "Informe o nome do titular do cartão.",                                    $this->domain ),
-							// "invalid_h_cpf"      => __( "Informe o CPF/CNPJ do titular do cartão.",                                $this->domain ),
-							// "invalid_h_phone"    => __( "Informe o telefone do titular do cartão.",                                $this->domain ),
-							//
-							// "expired_date"       => __( "Por favor, verifique a data de expiração e utilize o formato MM / AAAA.", $this->domain ),
-							//
-							// "empty_installments" => __( "Selecione o número de parcelas.",                                         $this->domain ),
-							// "interest_free"      => __( "sem juros",                                                               $this->domain ),
-							//
-							// "general_error"      => __( "Não foi possível processar os dados do seu cartão de crédito, por favor, tente novamente ou entre em contato para receber ajuda.", $this->domain ),
+							"invalid_card"       => __( "O número do cartão de crédito é inválido.",                               $this->domain ),
+							"invalid_expiry"     => __( "A data de expiração é inválida, por favor, utilize o formato MM / AAAA.", $this->domain ),
+							"invalid_cvv"        => __( "O código do cartão é inválido.",                                          $this->domain ),
+
+							"invalid_holder"     => __( "Informe o nome do titular do cartão.",                                    $this->domain ),
+							"invalid_h_cpf"      => __( "Informe o CPF/CNPJ do titular do cartão.",                                $this->domain ),
+							"invalid_h_phone"    => __( "Informe o telefone do titular do cartão.",                                $this->domain ),
+
+							"expired_date"       => __( "Por favor, verifique a data de expiração e utilize o formato MM / AAAA.", $this->domain ),
+
+							"empty_installments" => __( "Selecione o número de parcelas.",                                         $this->domain ),
+							"interest_free"      => __( "sem juros",                                                               $this->domain ),
+
+							"general_error"      => __( "Não foi possível processar os dados do seu cartão de crédito, por favor, tente novamente ou entre em contato para receber ajuda.", $this->domain ),
 						]
 					]
 				);
@@ -761,7 +763,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		$data     = [];
 
-		// if ( $method == "cc"     ) $data = $this->process_data_cc( $order );
+		if ( $method == "cc"       ) $data = $this->process_data_cc( $order );
 		if ( $method == "pix"      ) $data = $this->process_data_pix( $order );
 		if ( $method == "ticket"   ) $data = $this->process_data_ticket( $order );
 		if ( $method == "transfer" ) $data = $this->process_data_transfer( $order );
