@@ -212,4 +212,21 @@ class WC_SupremPay
 		// ] );
 	}
 
+	/**
+	 * Clear the options when the plugin is deactivated.
+	 *
+	 * @since 	1.0.0
+	 * @return 	void
+	 */
+	public static function deactivate()
+	{
+		$options = [
+			"bil"  => "supremapay_bil_webhook_registered",
+			"pix"  => "supremapay_pix_webhook_registered",
+			"card" => "supremapay_card_webhook_registered",
+		];
+
+		foreach ( $options as $option ) delete_option( $option );
+	}
+
 }

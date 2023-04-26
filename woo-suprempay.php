@@ -29,4 +29,6 @@ if ( !class_exists( "WC_SupremPay" ) )
 {
 	include_once dirname( __FILE__ ) . "/includes/class-wc-suprempay.php";
 	add_action( "plugins_loaded", [ "WC_SupremPay", "init" ] );
+
+	register_deactivation_hook( WC_SUPREMPAY_PLUGIN_FILE, [ "WC_SupremPay", "deactivate" ] );
 }
