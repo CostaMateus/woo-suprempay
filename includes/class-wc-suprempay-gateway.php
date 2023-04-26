@@ -845,6 +845,10 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		if ( $method == "transfer" && isset( $response[ "data" ] ) )
 		{
 			// não sei qual a possível resposta
+			$data = [ "type" => $method ];
+
+			$order->update_meta_data( "_suprempay_code", $data );
+			$order->update_status( "on-hold", __( "SupremPay: Aguardando confirmação", $this->domain ) );
 		}
 
 		$order->save();
@@ -1026,11 +1030,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		$code  = $order->get_meta( "_suprempay_code" );
 
-		// cc
-		if ( !$code ) return;
-
 		// only pix/ticket
-		return $this->render_code( $code );
+		if ( in_array( $code[ "type" ], [ "pix", "ticket" ] ) )
+			return $this->render_code( $code );
 	}
 
 	/**
@@ -1046,11 +1048,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		$code = $order->get_meta( "_suprempay_code" );
 
-		// cc
-		if ( !$code ) return;
-
 		// only pix/ticket
-		return $this->render_code( $code );
+		if ( in_array( $code[ "type" ], [ "pix", "ticket" ] ) )
+			return $this->render_code( $code );
 	}
 
 	/**
