@@ -735,6 +735,8 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		{
 			if ( ! get_query_var( "order-received" ) )
 			{
+				wp_enqueue_script( "suprempay-gateway-library", $this->api->get_pagseguro_direct_payment_url(), [], WC_SUPREMPAY_VERSION, true );
+
 				$suffix   = ""; // defined( "SCRIPT_DEBUG" ) && SCRIPT_DEBUG ? "" : ".min";
 
 				$css_path = "assets/css/frontend/sp-checkout{$suffix}.css";
@@ -743,7 +745,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 				$js_path  = "assets/js/frontend/sp-checkout{$suffix}.js";
 				$js_ver   = date( "ymdHis", filemtime( plugin_dir_path( WC_SUPREMPAY_PLUGIN_FILE ) . $js_path  ) );
-				wp_enqueue_script( "suprempay-gateway-checkout", plugins_url( $js_path,  WC_SUPREMPAY_PLUGIN_FILE ), [ "json2", "jquery", "woocommerce-extra-checkout-fields-for-brazil-front", "jquery-mask" ], $js_ver, true );
+				wp_enqueue_script( "suprempay-gateway-checkout", plugins_url( $js_path,  WC_SUPREMPAY_PLUGIN_FILE ), [ "json2", "jquery", "suprempay-gateway-library", "woocommerce-extra-checkout-fields-for-brazil-front", "jquery-mask" ], $js_ver, true );
 
 				$user     = wp_get_current_user();
 				$url      = get_rest_url( null, "suprempay/v1" );
