@@ -554,7 +554,7 @@ class WC_SupremPay_API
 			],
 			"card" => [
 				"token_api" => $this->gateway->get_token_user(),
-				"service"   => "collection-card",
+				"service"   => "payment-card",
 				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/card"   ),
 			],
 		];
