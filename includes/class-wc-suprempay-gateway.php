@@ -500,7 +500,8 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			"installment"      => [
 				"type"        => "number",
 				"title"       => __( "Número de parcelas",                                                $this->domain ),
-				"description" => __( "Selecione o número máximo de parcelas disponíveis para o cliente.", $this->domain ),
+				"description" => __( "Selecione o número máximo de parcelas disponíveis para o cliente.
+									  Parcela mínima de R$ 5,00.", $this->domain ),
 				"desc_tip"    => true,
 				"default"     => 1,
 				"custom_attributes" => [
@@ -792,18 +793,31 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 			];
 		}
 
-		// if ( $method == "cc"     && isset( $response[ "data" ][ "capture"   ] ) && $response[ "data" ][ "capture" ] == "CAPTURADO" )
-		// {
-		// 	$order->update_status( "processing", __( "SupremPay: Pagamento aprovado", $this->domain ) );
-		// }
+		if ( $method == "cc"     && isset( $response[ "data" ][ "capture"   ] ) && $response[ "data" ][ "capture" ] == "CAPTURADO" )
+		{
+			$data = [
+				"type" => $method,
+				"data" => [ "payment_id" => $response[ "data" ][ "paymentId" ] ]
+			];
+
+			$order->update_meta_data( "_suprempay_code", $data );
+			$order->update_status( "processing", __( "SupremPay: Pagamento aprovado", $this->domain ) );
+		}
 
 		if ( $method == "pix"    && isset( $response[ "data" ][ "info" ] ) )
 		{
 			$info = $response[ "data" ][ "info" ];
+
 			$data = [
 				"type" => $method,
 				"link" => $info[ "pix_wallet" ],
-				"code" => $info[ "pix_copy"   ]
+				"code" => $info[ "pix_copy"   ],
+				"data" => [
+					"payment_id"          => $info[ "pix_path"            ],
+					"transaction_id"      => $info[ "transaction_id"      ],
+					"guid_user"           => $info[ "guid_user"           ],
+					"guid_pix_collection" => $info[ "guid_pix_collection" ],
+				]
 			];
 
 			$order->update_meta_data( "_suprempay_code", $data );
@@ -812,10 +826,16 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		if ( $method == "ticket" && isset( $response[ "data" ] ) )
 		{
+			$info = $response[ "data" ];
+
 			$data = [
 				"type" => $method,
-				"link" => $response[ "data" ][ "link"           ],
-				"code" => $response[ "data" ][ "digitable_line" ],
+				"link" => $info[ "link"           ],
+				"code" => $info[ "digitable_line" ],
+				"data" => [
+					"payment_id"     => $info[ "token_billet"   ],
+					"digitable_line" => $info[ "digitable_line" ],
+				]
 			];
 
 			$order->update_meta_data( "_suprempay_code", $data );

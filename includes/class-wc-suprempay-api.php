@@ -389,16 +389,7 @@ class WC_SupremPay_API
 			"customerZipCode"           => $data[ "zipcode"    ],
 		];
 
-		$response = $this->exec( "card", "POST", $header, $params );
-
-		if ( $response[ "success" ] )
-		{
-			$tokens[ "payments" ][ $data[ "order_id" ] ] = $response[ "data" ][ "paymentId" ];
-
-			update_user_meta( $user->ID, "_suprempay_tokens", $tokens );
-		}
-
-		return $response;
+		return $this->exec( "card", "POST", $header, $params );
 	}
 
 	/**
@@ -432,43 +423,7 @@ class WC_SupremPay_API
 			"email"       => $email,
 		];
 
-		$response = $this->exec( "pix/collection/wallet", "POST", [], $params );
-
-		if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "success" ] )
-		{
-			$customer_id = $order->get_customer_id();
-			$tokens      = get_user_meta( $customer_id, "_suprempay_tokens", true );
-			$info        = $response[ "data" ][ "info" ];
-
-			if ( empty( $tokens ) )
-			{
-				$tokens = [
-					"payments" => [
-						$order->get_id() => [
-							"type"                => "pix",
-							"payment_id"          => $info[ "pix_path"            ],
-							"transaction_id"      => $info[ "transaction_id"      ],
-							"guid_user"           => $info[ "guid_user"           ],
-							"guid_pix_collection" => $info[ "guid_pix_collection" ],
-						]
-					],
-				];
-			}
-			else
-			{
-				$tokens[ "payments" ][ $order->get_id() ] = [
-					"type"                => "pix",
-					"payment_id"          => $info[ "pix_path"            ],
-					"transaction_id"      => $info[ "transaction_id"      ],
-					"guid_user"           => $info[ "guid_user"           ],
-					"guid_pix_collection" => $info[ "guid_pix_collection" ],
-				];
-			}
-
-			update_user_meta( $customer_id, "_suprempay_tokens", $tokens );
-		}
-
-		return $response;
+		return $this->exec( "pix/collection/wallet", "POST", [], $params );
 	}
 
 	/**
@@ -509,38 +464,7 @@ class WC_SupremPay_API
 			"amount"         => $amount,
 		];
 
-		$response = $this->exec( "v2/billet/set", "POST", [], $params );
-
-		if ( $response[ "success" ] && isset( $response[ "data" ] ) && $response[ "data" ][ "success" ] )
-		{
-			$customer_id = $order->get_customer_id();
-			$tokens      = get_user_meta( $customer_id, "_suprempay_tokens", true );
-
-			if ( empty( $tokens ) )
-			{
-				$tokens = [
-					"payments" => [
-						$order->get_id() => [
-							"type"           => "ticket",
-							"payment_id"     => $response[ "data" ][ "token_billet"   ],
-							"digitable_line" => $response[ "data" ][ "digitable_line" ],
-						]
-					],
-				];
-			}
-			else
-			{
-				$tokens[ "payments" ][ $order->get_id() ] = [
-					"type"           => "ticket",
-					"payment_id"     => $response[ "data" ][ "token_billet"   ],
-					"digitable_line" => $response[ "data" ][ "digitable_line" ],
-				];
-			}
-
-			update_user_meta( $customer_id, "_suprempay_tokens", $tokens );
-		}
-
-		return $response;
+		return $this->exec( "v2/billet/set", "POST", [], $params );
 	}
 
 	/**
