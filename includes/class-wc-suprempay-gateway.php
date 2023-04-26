@@ -219,10 +219,11 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
         $this->token_integr_hml = $this->get_option( "token_integr_hml"     );
         $this->token_integr     = $this->get_option( "token_integr"         );
 
-		// Card
-        $this->cc               = $this->get_option( "cc"                   );
-        $this->cc_type          = $this->get_option( "cc_type", "avista"    );
-        $this->installment      = $this->get_option( "installment", "1"     );
+		// TODO habilitar credit card
+		// // Card
+        // $this->cc               = $this->get_option( "cc"                   );
+        // $this->cc_type          = $this->get_option( "cc_type", "avista"    );
+        // $this->installment      = $this->get_option( "installment", "1"     );
 
 		// Pix / ticket / transfer configs
 		$this->pix              = $this->get_option( "pix"                  );
@@ -473,44 +474,45 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 				"default"     => "",
 			],
 
-			// card
-			"cc_title"         => [
-				"title"       => __( "Cartão de crédito",                                                 $this->domain ),
-				"type"        => "title",
-				"description" => "",
-			],
-			"cc"               => [
-				"type"    => "checkbox",
-				"title"   => __( "Cartão de Crédito",                                                     $this->domain ),
-				"label"   => __( "Ativar cartão de crédito no checkout",                                  $this->domain ),
-				"default" => "yes",
-            ],
-			"cc_type"          => [
-				"type"        => "select",
-				"title"       => __( "Tipo de pagamento",                                                 $this->domain ),
-				"description" => __( "Selecione \"parcelado\" para oferecer a opção de
-									  parcelamento sem juros no cartão de crédito para o cliente.",       $this->domain ),
-				"desc_tip"    => true,
-				"default"     => "avista",
-				"class"       => "wc-enhanced-select",
-				"options"     => [
-					"avista"    => __(  "À vista",                                                        $this->domain ),
-					"parcelado" => __(  "Parcelado",                                                      $this->domain ),
-				],
-            ],
-			"installment"      => [
-				"type"        => "number",
-				"title"       => __( "Número de parcelas",                                                $this->domain ),
-				"description" => __( "Selecione o número máximo de parcelas disponíveis para o cliente.
-									  Parcela mínima de R$ 5,00.", $this->domain ),
-				"desc_tip"    => true,
-				"default"     => 1,
-				"custom_attributes" => [
-					"maxlength"   => 2,
-					"min"         => 1,
-					"max"         => 12,
-				],
-            ],
+			// TODO habilitar credit card
+			// // card
+			// "cc_title"         => [
+			// 	"title"       => __( "Cartão de crédito",                                                 $this->domain ),
+			// 	"type"        => "title",
+			// 	"description" => "",
+			// ],
+			// "cc"               => [
+			// 	"type"    => "checkbox",
+			// 	"title"   => __( "Cartão de Crédito",                                                     $this->domain ),
+			// 	"label"   => __( "Ativar cartão de crédito no checkout",                                  $this->domain ),
+			// 	"default" => "yes",
+            // ],
+			// "cc_type"          => [
+			// 	"type"        => "select",
+			// 	"title"       => __( "Tipo de pagamento",                                                 $this->domain ),
+			// 	"description" => __( "Selecione \"parcelado\" para oferecer a opção de
+			// 						  parcelamento sem juros no cartão de crédito para o cliente.",       $this->domain ),
+			// 	"desc_tip"    => true,
+			// 	"default"     => "avista",
+			// 	"class"       => "wc-enhanced-select",
+			// 	"options"     => [
+			// 		"avista"    => __(  "À vista",                                                        $this->domain ),
+			// 		"parcelado" => __(  "Parcelado",                                                      $this->domain ),
+			// 	],
+            // ],
+			// "installment"      => [
+			// 	"type"        => "number",
+			// 	"title"       => __( "Número de parcelas",                                                $this->domain ),
+			// 	"description" => __( "Selecione o número máximo de parcelas disponíveis para o cliente.
+			// 						  Parcela mínima de R$ 5,00.", $this->domain ),
+			// 	"desc_tip"    => true,
+			// 	"default"     => 1,
+			// 	"custom_attributes" => [
+			// 		"maxlength"   => 2,
+			// 		"min"         => 1,
+			// 		"max"         => 12,
+			// 	],
+            // ],
 
 			// pix
 			"pix_title"        => [
@@ -704,8 +706,11 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		wc_get_template(
 			"checkout-form.php",
 			[
+				// TODO remover hard code
+				"cc"            => "no",
+
 				"cart_total"    => $this->get_order_total(),
-				"cc"            => $this->cc          ?? "no",
+				// "cc"            => $this->cc          ?? "no",
 				"cc_type"       => $this->cc_type     ?? "avista",
 				"installment"   => $this->installment ?? "1",
 				"pix"           => $this->pix         ?? "no",
@@ -754,9 +759,15 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 					"suprempay-gateway-checkout",
 					"wc_spg_params",
 					[
-						"user_id"  => $user->ID,
-						"base_url" => $url,
-						"messages" => [
+						// TODO session_id não funciona
+						"credit_card" => [
+							"session_id" => $this->api->get_session_id(),
+							// "enabled"    => $this->cc ?? "no",
+							"enabled"    => "no",
+						],
+						"user_id"     => $user->ID,
+						"base_url"    => $url,
+						"messages"    => [
 							"session_error"      => __( "Ocorreu um error. Por favor, atualize a página.",                         $this->domain ),
 
 							"invalid_card"       => __( "O número do cartão de crédito é inválido.",                               $this->domain ),
@@ -769,8 +780,8 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 							"expired_date"       => __( "Por favor, verifique a data de expiração e utilize o formato MM / AAAA.", $this->domain ),
 
-							"empty_installments" => __( "Selecione o número de parcelas.",                                         $this->domain ),
-							"interest_free"      => __( "sem juros",                                                               $this->domain ),
+							// "empty_installments" => __( "Selecione o número de parcelas.",                                         $this->domain ),
+							// "interest_free"      => __( "sem juros",                                                               $this->domain ),
 
 							"general_error"      => __( "Não foi possível processar os dados do seu cartão de crédito, por favor, tente novamente ou entre em contato para receber ajuda.", $this->domain ),
 						]
