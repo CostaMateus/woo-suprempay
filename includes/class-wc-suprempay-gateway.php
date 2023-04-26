@@ -876,11 +876,13 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 
 		if ( $method == "transfer" && isset( $response[ "data" ] ) )
 		{
-			// não sei qual a possível resposta
-			$data = [ "type" => $method ];
+			$data = [
+				"type" => $method,
+				"data" => [ "payment_id" => $data[ "data" ][ "token" ], ]
+			];
 
 			$order->update_meta_data( "_suprempay_code", $data );
-			$order->update_status( "on-hold", __( "SupremPay: Aguardando confirmação", $this->domain ) );
+			$order->update_status( "processing", __( "SupremPay: Pagamento aprovado", $this->domain ) );
 		}
 
 		$order->save();
@@ -1028,12 +1030,12 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 * @param 	object 	$order
 	 * @return 	array
 	 */
-	public function process_data_transfer( $order )
+	private function process_data_transfer( $order )
 	{
-		$code      = WC()->checkout()->get_value( "suprempay_auth_code" );
-		$email     = WC()->checkout()->get_value( "billing_email"       );
-		$firstName = WC()->checkout()->get_value( "billing_first_name"  );
-		$lastName  = WC()->checkout()->get_value( "billing_last_name"   );
+		$code      = WC()->checkout()->get_value( "suprempay_auth_code"  );
+		$email     = WC()->checkout()->get_value( "suprempay_auth_email" );
+		$firstName = WC()->checkout()->get_value( "billing_first_name"   );
+		$lastName  = WC()->checkout()->get_value( "billing_last_name"    );
 		$name      = "{$firstName} {$lastName}";
 
 		$data      = [
