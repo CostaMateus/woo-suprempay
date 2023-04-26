@@ -246,6 +246,24 @@ class WC_SupremPay_API
     }
 
 	/**
+	 * Get pagseguro session id
+	 *
+	 * @since 	1.0.0
+	 * @return 	string|false
+	 */
+	public function get_session_id()
+	{
+		$params   = [ "token_api" => $this->gateway->get_token_user() ];
+
+		$response = $this->exec( "pagseguro/session", "GET", [], $params );
+
+		if ( !$response[ "success" ] || ( isset( $response[ "data" ][ "success" ] ) && !$response[ "data" ][ "success" ] ) )
+			return false;
+
+		return $response[ "data" ][ "info" ];
+	}
+
+	/**
 	 * Process the payment
 	 *
 	 * @since 	1.0.0
@@ -536,6 +554,8 @@ class WC_SupremPay_API
 		$options   = [
 			"bil"  => "supremapay_bil_webhook_registered",
 			"pix"  => "supremapay_pix_webhook_registered",
+
+			// TODO habilitar WH /card
 			// "card" => "supremapay_card_webhook_registered",
 		];
 
