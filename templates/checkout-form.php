@@ -226,6 +226,15 @@ defined( "ABSPATH" ) || exit;
 			<?php endif; ?>
 
 			<p><?php _e( "Faça transferência diretamente da sua conta SupremCash.", WC_SUPREMPAY_DOMAIN ); ?></p>
+			<p id="suprempay-auth-email" class="form-row form-row-first" >
+				<label for="suprempay-auth-email-field" >
+					<?php _e( "E-mail da conta", WC_SUPREMPAY_DOMAIN ); ?> <span class="required" >*</span>
+				</label>
+				<input id="suprempay-auth-email-field"
+					name="suprempay_auth_email" class="input-text" type="email"
+					autocomplete="off" style="font-size:1.5em; padding:8px; height:50px;"
+					placeholder="<?php _e( "E-mail da conta SupremCash", WC_SUPREMPAY_DOMAIN ); ?>" />
+			</p>
 			<p id="suprempay-auth-code" class="form-row form-row-last" >
 				<label for="suprempay-auth-code-field" >
 					<?php _e( "Código de segurança", WC_SUPREMPAY_DOMAIN ); ?> <span class="required" >*</span>
