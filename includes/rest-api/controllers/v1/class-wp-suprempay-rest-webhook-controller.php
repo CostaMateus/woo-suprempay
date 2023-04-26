@@ -144,6 +144,18 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
                 ],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			"/$this->rest_base/card",
+			[
+				[
+					"methods"             => WP_REST_Server::CREATABLE, // POST
+                    "callback"            => [ $this, "card" ],
+                    "permission_callback" => "__return_true",
+                ],
+			]
+		);
 	}
 
 	/**
@@ -230,6 +242,30 @@ class WP_SupremPay_Rest_Webhook_Controller extends WP_REST_Controller
 	 * @return 	WP_REST_Response
 	 */
 	public function ted( WP_REST_Request $request )
+	{
+		/**
+		 * TODO tratar os dados
+		 */
+		$param    = $request->get_params();
+
+		$data     = [
+			"success" => true,
+			"message" => "ok",
+		];
+
+		$response = new WP_REST_Response( $data, 200 );
+
+		return $response;
+	}
+
+	/**
+	 * Webhook creditcard
+	 *
+	 * @since 	1.0.0
+	 * @param 	WP_REST_Request $data
+	 * @return 	WP_REST_Response
+	 */
+	public function card( WP_REST_Request $request )
 	{
 		/**
 		 * TODO tratar os dados
