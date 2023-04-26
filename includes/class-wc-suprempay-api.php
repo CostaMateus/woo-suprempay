@@ -536,9 +536,9 @@ class WC_SupremPay_API
 	{
 		$v         = WC_SUPREMPAY_REST_API_VER;
 		$options   = [
-			"bil" => "supremapay_bil_webhook_registered",
-			"pix" => "supremapay_pix_webhook_registered",
-			"ted" => "supremapay_ted_webhook_registered",
+			"bil"  => "supremapay_bil_webhook_registered",
+			"pix"  => "supremapay_pix_webhook_registered",
+			"card" => "supremapay_card_webhook_registered",
 		];
 
 		$endpoints = [
@@ -552,10 +552,10 @@ class WC_SupremPay_API
 				"service"   => "collection-pix",
 				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/pix"    ),
 			],
-			"ted" => [
+			"card" => [
 				"token_api" => $this->gateway->get_token_user(),
-				"service"   => "collection-ted",
-				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/ted"    ),
+				"service"   => "collection-card",
+				"url"       => get_rest_url( null, "suprempay/{$v}/webhook/card"   ),
 			],
 		];
 
