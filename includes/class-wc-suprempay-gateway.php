@@ -385,7 +385,8 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		$available = $this->get_option( "enabled" ) === "yes" &&
 					 $this->get_token_user()        !== ""    &&
 					 $this->get_token_integration() !== ""    &&
-					 $this->using_supported_currency();
+					 $this->using_supported_currency()        &&
+					 $this->is_ecfb_active();
 
 		if ( !class_exists( "Extra_Checkout_Fields_For_Brazil" ) ) $available = false;
 
@@ -645,6 +646,17 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
+	 * Returns a bool that indicates if the plugin ECFB is active
+	 *
+	 * @since 	1.0.0
+	 * @return 	bool
+	 */
+	public function is_ecfb_active()
+	{
+		return is_plugin_active( "woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php" );
+	}
+
+	/**
 	 * Admin page
 	 *
 	 * @since 	1.0.0
@@ -670,6 +682,24 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 		if ( $this->is_homol === "yes" ) $description .= __( " - SANDBOX ativado.", $this->domain );
 
 		if ( $description ) echo wpautop( wptexturize( trim( $description ) ) );
+
+		if ( $this->cc_type == "parcelado" && $this->installment > 1 )
+		{
+			$new_installment = $this->installment;
+
+			foreach ( range( 1, $this->installment ) as $i )
+			{
+				$parcel = $this->get_order_total() / $i;
+
+				if ( $parcel < 5 )
+				{
+					$new_installment = $i - 1;
+					break;
+				}
+			}
+
+			$this->installment = $new_installment;
+		}
 
 		wc_get_template(
 			"checkout-form.php",
