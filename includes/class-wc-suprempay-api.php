@@ -118,6 +118,13 @@ class WC_SupremPay_API
 				: self::API_PRD;
 	}
 
+	public function get_pagseguro_direct_payment_url()
+	{
+		$env = $this->gateway->get_is_homol() === "yes" ? ".sandbox." : ".";
+
+		return "https://stc{$env}pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js";
+	}
+
 	/**
 	 * Exec the calls
 	 *
@@ -533,6 +540,7 @@ class WC_SupremPay_API
 			"pix" => "supremapay_pix_webhook_registered",
 			"ted" => "supremapay_ted_webhook_registered",
 		];
+
 		$endpoints = [
 			"bil" => [
 				"token_api" => $this->gateway->get_token_user(),
