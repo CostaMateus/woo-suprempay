@@ -108,22 +108,25 @@
 
 			supremPayShowHideMethodForm( $( "#suprempay-payment-methods input[type=radio]:checked" ).val() );
 
-			// CPF.
-			$( "#suprempay-card-holder-cpf-field" ).mask( "000.000.000-00" );
-			// CNPJ
-			$( "#suprempay-card-holder-cnpj-field" ).mask( "00.000.000/0000-00" );
-			$( "#suprempay-card-holder-cnpj" ).hide();
+			if ( wc_spg_params.credit_card.enabled === "yes" )
+			{
+				// CPF.
+				$( "#suprempay-card-holder-cpf-field" ).mask( "000.000.000-00" );
+				// CNPJ
+				$( "#suprempay-card-holder-cnpj-field" ).mask( "00.000.000/0000-00" );
+				$( "#suprempay-card-holder-cnpj" ).hide();
 
-			// Birth Date.
-			$( "#suprempay-card-holder-birth-date-field" ).mask( "00/00/0000" );
+				// Birth Date.
+				$( "#suprempay-card-holder-birth-date-field" ).mask( "00/00/0000" );
 
-			// Phone.
-			let MaskBehavior = function( val ) {
-				return val.replace( /\D/g, "" ).length === 11 ? "(00) 00000-0000" : "(00) 0000-00009";
-			}, maskOptions = {
-				onKeyPress: function( val, e, field, options ) { field.mask( MaskBehavior.apply( {}, arguments ), options ); }
-			};
-			$( "#suprempay-card-holder-phone-field" ).mask( MaskBehavior, maskOptions );
+				// Phone.
+				let MaskBehavior = function( val ) {
+					return val.replace( /\D/g, "" ).length === 11 ? "(00) 00000-0000" : "(00) 0000-00009";
+				}, maskOptions = {
+					onKeyPress: function( val, e, field, options ) { field.mask( MaskBehavior.apply( {}, arguments ), options ); }
+				};
+				$( "#suprempay-card-holder-phone-field" ).mask( MaskBehavior, maskOptions );
+			}
 
 			$( "#suprempay-pix-form input[type=radio]:checked" ).parent( "label" ).parent( "li" ).addClass( "active" );
 		}
@@ -296,6 +299,73 @@
 			// return false;
 		}
 
+
+		if ( wc_spg_params.credit_card.enabled === "yes" && wc_spg_params.credit_card.session_id )
+		{
+			// TODO session_id não funciona
+			PagSeguroDirectPayment.setSessionId( wc_spg_params.credit_card.session_id );
+
+			PagSeguroDirectPayment.getPaymentMethods({
+				amount: 500.00,
+				success: function( response ) {
+					// Retorna os meios de pagamento disponíveis.
+					console.log( "success", response );
+				},
+				error: function( response ) {
+					// Callback para chamadas que falharam.
+					console.log( "error", response );
+				}
+			});
+
+			// Switch CPF / CNPJ
+			$( "body" ).on( "click", "#suprempay-legal-person-field", function() {
+				supremPayShowHideCpfCnpj( $( this ).is( ":checked" ) );
+			});
+
+			// Get the credit card brand.
+			$( "body" ).on( "focusout", "#suprempay-card-number-field", function() {
+				let bin = $( this ).val().replace( /[^\d]/g, '' ).substr( 0, 6 );
+
+				// if ( bin.length === 6 )
+				// {
+				// 	PagSeguroDirectPayment.getBrand( {
+				// 		cardBin: bin,
+				// 		success: function( data ) {
+				// 			console.log( data );
+				//
+				// 			$( "body" ).trigger( "suprempay_credit_card_brand", data.brand.name );
+				// 			supremPaySetCreditCardBrand( data.brand.name );
+				// 		},
+				// 		error: function() {
+				// 			$( "body" ).trigger( "suprempay_credit_card_brand", "error" );
+				// 			supremPaySetCreditCardBrand( "error" );
+				// 		}
+				// 	} );
+				// }
+			} );
+			$( "body" ).on( "updated_checkout", function() {
+				let field = $( "body #suprempay-card-number-field" );
+				if ( field.length > 0 ) field.focusout();
+			} );
+
+			// Set the errors.
+			$( "body" ).on( "focus", "#suprempay-card-number-field, #suprempay-card-expiry-field", function() {
+				$( "#suprempay-cc-form .woocommerce-error" ).remove();
+			} );
+
+			$( "body" ).on( "suprempay_credit_card_brand", function( e, brand ) {
+				if ( brand === "error" )
+					supremPayAddErrorMessage( wc_spg_params.messages.invalid_card );
+			} );
+		}
+		else
+		{
+			$( "body" ).on( "updated_checkout", function() {
+				$( "#suprempay-cc-form" ).remove();
+				$( "#suprempay-payment-method-cc" ).parent().parent().remove();
+			});
+		}
+
 		// Display the payment for and init the input masks.
 		if ( wc_checkout_params.is_checkout === "1" )
 		{
@@ -308,91 +378,10 @@
 			supremPayInitPaymentForm();
 		}
 
-		// Switch CPF / CNPJ
-		$( "body" ).on( "click", "#suprempay-legal-person-field", function() {
-			supremPayShowHideCpfCnpj( $( this ).is( ":checked" ) );
-		});
-
 		// Switch the payment method form.
 		$( "body" ).on( "click", "#suprempay-payment-methods input[type=radio]", function() {
 			supremPayShowHideMethodForm( $( this ).val() );
 		});
-
-		// Get the credit card brand.
-		$( "body" ).on( "focusout", "#suprempay-card-number-field", function() {
-			let bin = $( this ).val().replace( /[^\d]/g, '' ).substr( 0, 6 );
-
-			if ( bin.length === 6 )
-			{
-				PagSeguroDirectPayment.getBrand( {
-					cardBin: bin,
-					success: function( data ) {
-						console.log( data );
-						$( "body" ).trigger( "suprempay_credit_card_brand", data.brand.name );
-						supremPaySetCreditCardBrand( data.brand.name );
-					},
-					error: function() {
-                        $( "body" ).trigger( "suprempay_credit_card_brand", "error" );
-                        supremPaySetCreditCardBrand( "error" );
-					}
-				} );
-
-                // $.ajax( {
-                //     url  : `${wc_spg_params.base_url}/cards/brand`,
-                //     type : "POST",
-                //     data : { bin },
-                //     success: function( data ) {
-				// 		let status = JSON.parse( data );
-				// 		// console.log( status );
-
-                //         if ( status.error )
-                //         {
-                //             $( "body" ).trigger( "suprempay_credit_card_brand", "error" );
-                //             supremPaySetCreditCardBrand( "error" );
-				// 		}
-				// 		else if ( status.brandInfo.supported )
-				// 		{
-				// 			$( "body" ).trigger( "suprempay_credit_card_brand", status.brandInfo.brand );
-				// 			supremPaySetCreditCardBrand( status.brandInfo.brand );
-				// 		}
-				// 		else
-				// 		{
-				// 			$( "body" ).trigger( "suprempay_credit_card_brand", "unsupported" );
-				// 			supremPaySetCreditCardBrand( "unsupported" );
-				// 		}
-                //     },
-                //     error: function( err ) {
-                //         // console.log( err );
-                //         $( "body" ).trigger( "suprempay_credit_card_brand", "error" );
-                //         supremPaySetCreditCardBrand( "error" );
-                //     }
-                // } );
-			}
-		} );
-		$( "body" ).on( "updated_checkout", function() {
-			let field = $( "body #suprempay-card-number-field" );
-			if ( field.length > 0 ) field.focusout();
-		} );
-
-		// Set the errors.
-		$( "body" ).on( "focus", "#suprempay-card-number-field, #suprempay-card-expiry-field", function() {
-			$( "#suprempay-cc-form .woocommerce-error" ).remove();
-		} );
-
-		$( "body" ).on( "suprempay_credit_card_brand", function( e, brand ) {
-            if ( brand === "unsupported" )
-            {
-                supremPayAddErrorMessage( wc_spg_params.messages.unsupported_card );
-            }
-            else if ( brand === "error" )
-            {
-                supremPayAddErrorMessage( wc_spg_params.messages.invalid_card );
-            }
-			else
-			{
-				// get installments via API, v2
-			}
-		} );
 
 		// Process the credit card data when submit the checkout form.
 		$( "form.checkout" ).on( "checkout_place_order", function() {
