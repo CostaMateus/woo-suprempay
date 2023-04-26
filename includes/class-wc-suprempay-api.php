@@ -240,8 +240,6 @@ class WC_SupremPay_API
 					"data"    => json_decode( $resp, true ),
 				];
 
-				$this->log( json_encode( $result ), true );
-
 				return $result;
 			}
 		}
@@ -538,7 +536,7 @@ class WC_SupremPay_API
 		$options   = [
 			"bil"  => "supremapay_bil_webhook_registered",
 			"pix"  => "supremapay_pix_webhook_registered",
-			"card" => "supremapay_card_webhook_registered",
+			// "card" => "supremapay_card_webhook_registered",
 		];
 
 		$endpoints = [
