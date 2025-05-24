@@ -2,7 +2,8 @@
 /**
  * Admin options screen.
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay/Admin/Settings
  *
  * @version 1.0.0

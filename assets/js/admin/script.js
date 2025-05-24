@@ -1,3 +1,8 @@
+/**
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ * @since 1.0.0 
+ */
+
 ( function ( $ ) {
 	"use strict";
 

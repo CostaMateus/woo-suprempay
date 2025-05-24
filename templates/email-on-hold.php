@@ -2,7 +2,8 @@
 /**
  * HTML email instructions.
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay/Templates
  * @version 1.0.0
  */

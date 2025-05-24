@@ -2,7 +2,8 @@
 /**
  * Admin View: Notice - Currency not supported.
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ * 
  * @package WooCommerce_SupremPay/Notices
  * @version 1.0.0
  */

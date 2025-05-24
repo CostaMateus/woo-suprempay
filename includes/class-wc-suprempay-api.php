@@ -2,7 +2,8 @@
 /**
  * API class
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay/Classes/Api
  * @version 1.0.0
  */
@@ -16,7 +17,7 @@ class WC_SupremPay_API
 	 * @var 	string
 	 * @since 	1.0.0
 	 */
-	const API_HML    = "https://demoapi.suprem.cash";
+	const API_HML    = "https://demoapi.suprem.cash"; // hardcoded for now
 
 	/**
 	 * Endpoint prod.
@@ -24,7 +25,7 @@ class WC_SupremPay_API
 	 * @var 	string
 	 * @since 	1.0.0
 	 */
-	const API_PRD    = "https://api.suprem.cash";
+	const API_PRD    = "https://api.suprem.cash"; // hardcoded for now
 
 	/**
 	 * Http codes.

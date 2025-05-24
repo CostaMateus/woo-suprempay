@@ -2,7 +2,8 @@
 /**
  * Admin View: Notice - WooCommerce missing.
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package Woo_Packet/Notices
  * @version 1.0.0
  */

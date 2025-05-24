@@ -2,7 +2,8 @@
 /**
  * Provide a admin area view for the plugin
  *
- * @author 		Mateus Costa <mateus@costamateus.com.br>
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package 	WooCommerce_SupremPay
  * @version 	1.0.0
  */

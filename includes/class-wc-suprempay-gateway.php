@@ -2,7 +2,8 @@
 /**
  * Gateway class
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay/Classes/Gateway
  * @version 1.0.0
  */
@@ -175,7 +176,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	/**
 	 * Route base
 	 *
-	 * @var 	wc_get_logger|WC_Logger
+	 * @var 	WC_Logger
 	 * @since 	1.0.0
 	 */
 	protected $log;
@@ -257,8 +258,9 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 */
 	public static function init()
     {
-		// If the single instance hasn't been set, set it now.
-		if ( null === self::$instance ) self::$instance = new self;
+		if ( null === self::$instance )
+			self::$instance = new self;
+
 		return self::$instance;
 	}
 
@@ -332,7 +334,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 * Get log
 	 *
 	 * @since 	1.0.0
-	 * @return 	wc_get_logger|WC_Logger
+	 * @return 	WC_Logger
 	 */
 	public function get_log()
 	{
@@ -1065,13 +1067,14 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 *
 	 * @since 	1.0.0
 	 * @param 	int 	$order_id
-	 * @return 	string
+	 * @return 	void
 	 */
 	public function thankyou_page( $order_id )
 	{
 		$order = wc_get_order( $order_id );
 
-		if ( $order->get_payment_method() != $this->id ) return;
+		if ( $order->get_payment_method() != $this->id )
+			return;
 
 		$code  = $order->get_meta( "_suprempay_code" );
 
@@ -1085,11 +1088,12 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	 *
 	 * @since 	1.0.0
 	 * @param 	object 	$order
-	 * @return 	string
+	 * @return 	void
 	 */
 	public function order_page( $order )
 	{
-		if ( $order->get_payment_method() != $this->id ) return;
+		if ( $order->get_payment_method() != $this->id )
+			return;
 
 		$code = $order->get_meta( "_suprempay_code" );
 
@@ -1099,7 +1103,7 @@ class WC_SupremPay_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Render Pix code on thnak_you page
+	 * Render Pix code on thank_you page
 	 *
 	 * @since 	1.0.0
 	 * @param 	string 	$code

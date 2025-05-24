@@ -1,3 +1,8 @@
+/**
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ * @since 1.0.0
+ */
+
 /*global wc_spg_params, wc_checkout_params, PagSeguroDirectPayment */
 (function( $ ) {
 	"use strict";

@@ -2,7 +2,8 @@
 /**
  * Plugin's main class
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay
  * @version 1.0.0
  */
@@ -66,8 +67,9 @@ class WC_SupremPay
 	 */
 	public static function init()
     {
-		// If the single instance hasn't been set, set it now.
-		if ( null === self::$instance ) self::$instance = new self;
+		if ( null === self::$instance )
+			self::$instance = new self;
+
 		return self::$instance;
 	}
 

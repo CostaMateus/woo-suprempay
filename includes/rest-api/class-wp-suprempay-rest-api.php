@@ -2,7 +2,8 @@
 /**
  * REST API.
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay/Classes/Rest-Api
  * @version 1.0.0
  */

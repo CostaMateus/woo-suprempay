@@ -3,7 +3,8 @@
  * REST API Cards controller
  * Handles requests to the /cards endpoint.
  *
- * @author  Mateus_Costa
+ * @author Mateus Costa <mateus@costamateus.com.br>
+ *
  * @package WooCommerce_SupremPay/Classes/Rest-Api/Controllers/v1
  * @version 1.0.0
  */
